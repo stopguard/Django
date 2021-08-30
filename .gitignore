@@ -1,3 +1,4 @@
 .idea/
-venv/
-.~lock.block_schemas.odg#
+pycache/
+db.sqlite3
+Lib/
