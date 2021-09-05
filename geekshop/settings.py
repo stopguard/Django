@@ -132,4 +132,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Media files (dunamic Images, Video, Sound files)
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = (BASE_DIR / 'media',)
+MEDIA_ROOT = BASE_DIR / 'media'
