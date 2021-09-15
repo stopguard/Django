@@ -1,0 +1,18 @@
+{% extends 'authapp/base.html' %}
+{% load static %}
+
+{% block forms %}
+    <div class="card-body">
+        <form action="{% url 'auth:login' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                <a class="small" href="#">Забыли пароль?</a>
+                <input class="btn btn-primary" type="submit" value="Авторизоваться">
+            </div>
+        </form>
+    </div>
+    <div class="card-footer text-center">
+        <div class="small"><a href="{% url 'auth:register' %}">Нужен аккаунт? Зарегистрируйся!</a></div>
+    </div>
+{% endblock %}
