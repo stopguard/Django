@@ -1,7 +1,6 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.forms import forms
-
-from authapp.models import ShopUser
 
 
 class ShopUserLoginForm(AuthenticationForm):
@@ -14,7 +13,7 @@ class ShopUserLoginForm(AuthenticationForm):
 
 class ShopUserRegisterForm(UserCreationForm):
     class Meta:
-        model = ShopUser
+        model = get_user_model()
         fields = ('username', 'first_name', 'last_name', 'password1', 'password2', 'email', 'avatar')
 
     def __init__(self, *args, **kwargs):
