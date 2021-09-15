@@ -25,6 +25,6 @@ class ShopUserRegisterForm(UserCreationForm):
     def clean_username(self):
         u_name = self.cleaned_data['username']
         if len(u_name) < 6:
-            raise forms.ValidationError('Длина имени должна быть не меньше 6 символов')
+            raise forms.ValidationError('Длина имени пользователя должна быть не меньше 6 символов')
         return u_name
 
