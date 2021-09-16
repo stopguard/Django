@@ -12,7 +12,7 @@ def basket_add(request, prod_id):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-def basket_remove(request, prod_id):
-    context = {}
-    return render(request, '', context)
+def basket_remove(request, id):
+    Basket.objects.get(id=id).delete()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from django.contrib import auth
+from django.contrib import auth, messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -35,6 +35,7 @@ def register(request):
         register_form = ShopUserRegisterForm(data=request.POST, files=request.FILES)
         if register_form.is_valid():
             register_form.save()
+            messages.success(request, 'Пользователь зарегистрирован!')
             return HttpResponseRedirect(reverse('auth:login'))
     else:
         register_form = ShopUserRegisterForm()
@@ -51,6 +52,7 @@ def profile(request):
         profile_form = ShopUserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
         if profile_form.is_valid():
             profile_form.save()
+            messages.success(request, 'Профиль отредактирован!')
             return HttpResponseRedirect(reverse('auth:profile'))
     else:
         profile_form = ShopUserProfileForm(instance=request.user)
