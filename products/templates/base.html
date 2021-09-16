@@ -42,7 +42,7 @@
                 {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link"
-                           href="auth/profile.html">
+                           href="{% url 'auth:profile' %}">
                             {{ user.username|title }}
                             <i class="fas fa-user-circle"></i>
                         </a>
@@ -79,7 +79,9 @@
 
 <!-- FontAwesome script -->
 <script src="{% static 'vendor/fontawesome/fontawesome-icons.js' %}" crossorigin="anonymous"></script>
+{% block js %}
 
+{% endblock %}
 </body>
 
 </html>

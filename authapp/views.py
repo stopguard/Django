@@ -5,7 +5,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from authapp.forms import ShopUserLoginForm, ShopUserRegisterForm
+from authapp.forms import ShopUserLoginForm, ShopUserRegisterForm, ShopUserProfileForm
+from basketapp.models import Basket
 
 
 # Create your views here.
@@ -23,9 +24,8 @@ def login(request):
         form = ShopUserLoginForm()
     context = {
         'page_title': 'GeekShop - Авторизация',
+        'today': datetime.now(),
         'form': form,
-        'div_class': 'col-lg-5',
-        'label': 'Авторизация',
     }
     return render(request, 'authapp/login.html', context)
 
@@ -40,12 +40,28 @@ def register(request):
         register_form = ShopUserRegisterForm()
     context = {
         'page_title': 'GeekShop - Регистрация',
-        'div_class': 'col-lg-7',
-        'label': 'Создать аккаунт',
         'today': datetime.now(),
         'register_form': register_form,
     }
     return render(request, 'authapp/register.html', context)
+
+
+def profile(request):
+    if request.method == 'POST':
+        profile_form = ShopUserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
+        if profile_form.is_valid():
+            profile_form.save()
+            return HttpResponseRedirect(reverse('auth:profile'))
+    else:
+        profile_form = ShopUserProfileForm(instance=request.user)
+    basket = Basket.objects.filter(user=request.user)
+    context = {
+        'page_title': 'GeekShop - Профиль',
+        'today': datetime.now(),
+        'profile_form': profile_form,
+        'basket': basket
+    }
+    return render(request, 'authapp/profile.html', context)
 
 
 def logout(request):

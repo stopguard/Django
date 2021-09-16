@@ -16,8 +16,18 @@
                 <h1 class="my-4">GeekShop</h1>
                 <div class="list-group">
 
+                        <a href="{% url 'products:category' 0 %}"
+                           class="list-group-item {% if not request.resolver_match.kwargs.cat_id %}active{% endif %}">
+                            Все
+                        </a>
                     {% for category in categories %}
-                        <a href="#" class="list-group-item">{{ category.name }}</a>
+                        <a href="{% url 'products:category' category.id %}"
+                           class="list-group-item
+                           {% if request.resolver_match.kwargs.cat_id|add:'0' == category.id %}
+                                active
+                           {% endif %}">
+                            {{ category.name }}
+                        </a>
                     {% endfor %}
 
                 </div>
@@ -65,7 +75,7 @@
                             <div class="card h-100">
                                 <a href="#">
                                     <img class="card-img-top"
-                                         src="/media/{{ product.image }}"
+                                         src="{{ product.image.url }}"
                                          alt="">
                                 </a>
                                 <div class="card-body">
@@ -76,7 +86,8 @@
                                     <p class="card-text">{{ product.description }}</p>
                                 </div>
                                 <div class="card-footer text-center">
-                                    <button type="button" class="btn btn-outline-success">Отправить в корзину</button>
+                                    <a href="{% url 'basket:add' product.id %}"
+                                       class="btn btn-outline-success">Отправить в корзину</a>
                                 </div>
                             </div>
                         </div>
