@@ -23,7 +23,7 @@
                     {% for category in categories %}
                         <a href="{% url 'products:category' category.id %}"
                            class="list-group-item
-                           {% if request.resolver_match.kwargs.cat_id|add:'0' == category.id %}
+                           {% if request.resolver_match.kwargs.cat_id == category.id %}
                                 active
                            {% endif %}">
                             {{ category.name }}
