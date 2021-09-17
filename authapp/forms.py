@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from django.forms import forms
+from django import forms as forms_lib
 
 
 class ShopUserLoginForm(AuthenticationForm):
@@ -27,3 +28,18 @@ class ShopUserRegisterForm(UserCreationForm):
             raise forms.ValidationError('Длина имени пользователя должна быть не меньше 6 символов')
         return u_name
 
+
+class ShopUserProfileForm(UserChangeForm):
+    first_name = forms_lib.CharField(widget=forms_lib.TextInput(attrs={'class': 'form-control py-4',
+                                                                       'placeholder': 'Введите имя'}))
+    last_name = forms_lib.CharField(widget=forms_lib.TextInput(attrs={'class': 'form-control py-4',
+                                                                      'placeholder': 'Введите фамилию'}))
+    email = forms_lib.EmailField(widget=forms_lib.EmailInput(attrs={'class': 'form-control py-4',
+                                                                    'readonly': True}))
+    username = forms_lib.CharField(widget=forms_lib.TextInput(attrs={'class': 'form-control py-4',
+                                                                     'readonly': True}))
+    avatar = forms_lib.ImageField(widget=forms_lib.FileInput(attrs={'class': 'custom-file-input'}), required=False)
+
+    class Meta:
+        model = get_user_model()
+        fields = ('username', 'first_name', 'last_name', 'email', 'avatar', 'password')
