@@ -45,4 +45,3 @@ def basket_edit(request, item_id, val):
 def basket_remove(request, id):
     Basket.objects.get(id=id).delete()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
