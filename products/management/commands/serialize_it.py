@@ -24,7 +24,8 @@ class Command(BaseCommand):
             print(f"Read category: {category.name}")
             categories_list.append({
                 'name': category.name,
-                'description': category.description
+                'description': category.description,
+                'is_active': category.is_active,
             })
 
         for product in products_query:
@@ -35,7 +36,8 @@ class Command(BaseCommand):
                 'description': product.description,
                 'price': str(product.price),
                 'quantity': product.quantity,
-                'category': categories_query.filter(id=product.category_id)[0].name
+                'category': categories_query.filter(id=product.category_id)[0].name,
+                'is_active': product.is_active,
             })
 
         save_to_json(categories_list, 'its_categories')
