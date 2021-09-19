@@ -1,0 +1,24 @@
+    <div class="card mb-3 basketapp-item-{{ item.id }}">
+        <div class="card-body">
+            <h5 class="card-title">{{ item.product.name }}</h5>
+            <p class="card-text">{{ item.product.description }}</p>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item bg-light">
+                <div class="row text-center">
+                    <div class="col-lg-4">
+                        <input name="number-{{ item.id }}" type="number" class="form-control"
+                               value="{{ item.count }}" min="0" max="{{ item.product.quantity }}">
+                    </div>
+                    <div class="col-lg-4"><span class="basketapp-sum-{{ item.id }}">{{ item.sum_price }}</span>
+                        руб.
+                    </div>
+                    <div class="col-lg-4">
+                        <a href="{% url 'basket:remove' item.id %}">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>

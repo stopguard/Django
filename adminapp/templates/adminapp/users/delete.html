@@ -1,0 +1,43 @@
+{% extends 'adminapp/index.html' %}
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'css/auth-admin.css' %}" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js"
+            crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block content %}
+    <div id="layoutAuthentication">
+        <div id="layoutAuthentication_content">
+            <main>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-7">
+                            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                <div class="card-header">
+                                    <h3 class="text-center font-weight-light my-4">
+                                        Уверены что хотите удалить аккаунт <b>{{ user_to_del.username }}</b>?
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <input class="btn btn-danger btn-block" type="submit"
+                                               value="Удалить">
+                                    </form>
+                                    <a href="{% url 'adminapp:users' %}"
+                                       style="margin-top: 30px; " class="btn btn-success btn-block">Отмена</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/auth-admin.js' %}"></script>
+{% endblock %}

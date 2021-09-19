@@ -1,0 +1,96 @@
+{% extends 'adminapp/index.html' %}
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'css/auth-admin.css' %}" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js"
+            crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="container">
+        <div class="row">
+            <div>
+                {% if form.errors %}
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>Внимание!</strong> Проверьте правильность введённых данных!
+                        {{ form.errors }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endif %}
+                <h4 class="mt-3 mb-3">Продукт</h4>
+                <form action="{% url 'auth_admin:product_create' %}"
+                      method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    <div class="form-row mb-2">
+                        <div class="col-lg-12">
+                            <div class="custom-file">
+                                {{ form.image }}
+                                <label class="small mb-1"
+                                       for="{{ form.image.id_for_label }}" style="color: #c69500">
+                                    {{ form.image.errors }}
+                                </label>
+                                <label class="custom-file-label" for="{{ form.image.id_for_label }}">
+                                    Выберите изображение
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="small mb-1"
+                                       for="{{ form.name.id_for_label }}">Название</label>
+                                {{ form.name }}
+                            </div>
+                        </div>
+                        <div class="col-lg-6" style="color: #1b1e21">
+                            <label class="small mb-1"
+                                   for="{{ form.category.id_for_label }}" style="color: #c69500">
+                                {{ form.category.errors }}
+                            </label>
+                            <label class="small mb-1"
+                                   for="{{ form.category.id_for_label }}">Категория</label>
+                            {{ form.category }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-lg-6">
+                            <label class="small mb-1"
+                                   for="{{ form.price.id_for_label }}">Цена</label>
+                            {{ form.price }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="small mb-1"
+                                   for="{{ form.quantity.id_for_label }}">Количество на складе</label>
+                            {{ form.quantity }}
+                        </div>
+                    </div>
+                    <div class="form-row mb-2">
+                        <div class="col-md-12">
+                            <div class="form-text">
+                                <label class="small mb-2"
+                                       for="{{ form.description.id_for_label }}">Описание</label>
+                                {{ form.description }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-lg-12" style="margin-top: 33px;">
+                            <input class="btn btn-info btn-block" type="submit"
+                                   value="Создать продукт">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/auth-admin.js' %}"></script>
+{% endblock %}

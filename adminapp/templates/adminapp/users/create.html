@@ -1,0 +1,134 @@
+{% extends 'adminapp/index.html' %}
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'css/auth-admin.css' %}" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js"
+            crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block content %}
+    <div id="layoutAuthentication">
+        <div id="layoutAuthentication_content">
+            <main>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-7">
+                            {% if register_form.errors %}
+                                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                    <strong>Внимание!</strong> Проверьте правильность введённых данных!
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% endif %}
+                            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                <div class="card-header"><h3
+                                        class="text-center font-weight-light my-4">Создать аккаунт</h3>
+                                </div>
+                                <div class="card-body">
+                                    <form action="{% url 'adminapp:user_create' %}" method="post"
+                                          enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        {{ register_form.non_field_errors }}
+                                        <div class="form-row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="small mb-1"
+                                                           for="{{ register_form.first_name.id_for_label }}">Имя</label>
+                                                    {{ register_form.first_name }}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="small mb-1"
+                                                           for="{{ register_form.last_name.id_for_label }}">
+                                                        Фамилия
+                                                    </label>
+                                                    {{ register_form.last_name }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="col-md-6">
+                                                <label class="small mb-1"
+                                                       for="{{ register_form.username.id_for_label }}">
+                                                    Имя пользователя
+                                                </label>
+                                                <label class="small mb-1"
+                                                       for="{{ register_form.username.id_for_label }}"
+                                                       style="color: #c69500">
+                                                    {{ register_form.username.errors }}
+                                                </label>
+                                                {{ register_form.username }}
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="small mb-1" for="{{ register_form.email.id_for_label }}">
+                                                    Адрес электронной почты
+                                                </label>
+                                                <label class="small mb-1" for="{{ register_form.email.id_for_label }}"
+                                                       style="color: #c69500">
+                                                    {{ register_form.email.errors }}
+                                                </label>
+                                                {{ register_form.email }}
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="small mb-1"
+                                                           for="{{ register_form.password1.id_for_label }}">
+                                                        Пароль
+                                                    </label>
+                                                    <label class="small mb-1"
+                                                           for="{{ register_form.password1.id_for_label }}"
+                                                           style="color: #c69500">
+                                                        {{ register_form.password1.errors }}
+                                                    </label>
+                                                    {{ register_form.password1 }}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="small mb-1"
+                                                           for="{{ register_form.password2.id_for_label }}">
+                                                        Подтверждение пароля
+                                                    </label>
+                                                    <label class="small mb-1"
+                                                           for="{{ register_form.password2.id_for_label }}"
+                                                           style="color: #c69500">
+                                                        {{ register_form.password2.errors }}
+                                                    </label>
+                                                    {{ register_form.password2 }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="small mb-1"
+                                                   for="{{ register_form.avatar.id_for_label }}">
+                                                Выберите аватар
+                                            </label>
+                                            <label class="small mb-1"
+                                                   for="{{ register_form.avatar.id_for_label }}" style="color: #c69500">
+                                                {{ register_form.avatar.errors }}
+                                            </label>
+                                            {{ register_form.avatar }}
+                                        </div>
+                                        <div class="form-group mt-4 mb-0">
+                                            <input class="btn btn-primary btn-block" type="submit"
+                                                   value="Создать аккаунт">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/auth-admin.js' %}"></script>
+{% endblock %}

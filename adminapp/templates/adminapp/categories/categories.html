@@ -1,0 +1,62 @@
+{% extends 'adminapp/index.html' %}
+{% load static %}
+
+{% block admin_content %}
+    {% if messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Успешно!</strong>
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            Категории товаров
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Название</th>
+                        <th>Описание</th>
+                        <th>Доступность</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Название</th>
+                        <th>Описание</th>
+                        <th>Доступность</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    {% for item in all_categories %}
+                        <tr style="{% if not item.is_active %}opacity: 0.3{% endif %}">
+                            <td>
+                                <a href="{% url 'auth_admin:category_edit' item.id %}" style="color: dodgerblue">
+                                    {{ item.name }}
+                                </a>
+                            </td>
+                            <td>{{ item.description }}</td>
+                            <td class="text-center">
+                                <i class="fas fa-{% if item.is_active %}check{% else %}times{% endif %}-circle"></i>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'auth_admin:category_create' %}">
+                <button class="btn btn-success">Создать категорию</button>
+            </a>
+        </div>
+    </div>
+{% endblock %}

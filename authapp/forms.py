@@ -31,9 +31,10 @@ class ShopUserRegisterForm(UserCreationForm):
 
 class ShopUserProfileForm(UserChangeForm):
     first_name = forms_lib.CharField(widget=forms_lib.TextInput(attrs={'class': 'form-control py-4',
-                                                                       'placeholder': 'Введите имя'}))
+                                                                       'placeholder': 'Введите имя'}), required=False)
     last_name = forms_lib.CharField(widget=forms_lib.TextInput(attrs={'class': 'form-control py-4',
-                                                                      'placeholder': 'Введите фамилию'}))
+                                                                      'placeholder': 'Введите фамилию'}),
+                                    required=False)
     email = forms_lib.EmailField(widget=forms_lib.EmailInput(attrs={'class': 'form-control py-4',
                                                                     'readonly': True}))
     username = forms_lib.CharField(widget=forms_lib.TextInput(attrs={'class': 'form-control py-4',
