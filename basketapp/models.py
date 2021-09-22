@@ -17,17 +17,3 @@ class Basket(models.Model):
     def sum_price(self):
         return self.count * self.product.price
 
-    def sum_counts(self):
-        items = Basket.objects.filter(user=self.user)
-        quantity = 0
-        for item in items:
-            quantity += item.count
-        return quantity
-
-    def full_cost(self):
-        items = Basket.objects.filter(user=self.user)
-        cost = 0
-        for item in items:
-            cost += item.count * item.product.price
-        return cost
-

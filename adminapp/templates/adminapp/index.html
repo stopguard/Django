@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'css/auth-admin.css' %}" rel="stylesheet"/>
+    <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet"
+          crossorigin="anonymous"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js"
+            crossorigin="anonymous"></script>
+{% block admin_css %}
+{% endblock %}
+{% endblock %}
+
+{% block burger %}
+    <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i>
+    </button>
+{% endblock %}
+
+{% block content %}
+    <div id="layoutSidenav">
+
+        <!-- Side navigation bar -->
+        {% include 'adminapp/includes/sidemenu.html' %}
+
+        <div id="layoutSidenav_content">
+
+            <!-- Content -->
+
+            <main>
+                <div class="container-fluid">
+                    <h1 class="mt-4">{{ page_title }}</h1>
+                    {% block admin_content %}
+                    {% endblock %}
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted">Copyright &copy; GeekShop 2021</div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/auth-admin.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+    <script src="{% static 'js/datatable.js' %}"></script>
+    {% block admin_js %}
+    {% endblock %}
+{% endblock %}
