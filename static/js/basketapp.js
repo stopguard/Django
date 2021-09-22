@@ -1,7 +1,8 @@
 "use strict";
 
-window.onload = function () {
-    console.log('Window ready');
+window.onload = basketEdit
+
+function basketEdit (){
     $('input[type="number"]').on('change', function (event) {
         event.preventDefault();
         let quantity = event.target.value;
@@ -18,14 +19,18 @@ window.onload = function () {
                         $(`.basketapp-item-${basketItemId}`).remove();
                     }
                     if (+data.basket_cost > 0) {
+                        $('.money').removeClass('hidden');
+                        $('div.card-footer p').removeClass('hidden');
+                        $('.btn-success').removeClass('hidden');
                         $('.basketapp-total').text(data.basket_cost);
                     } else {
-                        $('div.card-footer p').remove();
-                        $('.btn-success').remove();
-                        $('h4.float-right').text('Здесь пока ничего нет');
+                        $('.money').addClass('hidden');
+                        $('div.card-footer p').addClass('hidden');
+                        $('.btn-success').addClass('hidden');
+                        $('.basketapp-total').text('Здесь пока ничего нет');
                     }
                 }
             },
         });
     });
-};
+}

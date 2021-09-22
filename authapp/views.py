@@ -12,21 +12,26 @@ from basketapp.models import Basket
 
 # Create your views here.
 def login(request):
+    previous_page = request.GET.get('next', '')
     if request.method == 'POST':
         form = ShopUserLoginForm(data=request.POST)
         if form.is_valid():
             username = request.POST.get('username')
             password = request.POST.get('password')
+            previous_page = request.POST.get('previous_page')
             user = auth.authenticate(username=username, password=password)
             if user and user.is_active:
                 auth.login(request, user)
-                return HttpResponseRedirect(reverse('products:index'))
+                return HttpResponseRedirect(previous_page or reverse('products:index'))
     else:
         form = ShopUserLoginForm()
     context = {
         'page_title': 'GeekShop - Авторизация',
         'today': datetime.now(),
         'form': form,
+        'previous_page': previous_page,
+        'username': request.user.username,
+        'is_superuser': request.user.is_superuser,
     }
     return render(request, 'authapp/login.html', context)
 
@@ -44,6 +49,8 @@ def register(request):
         'page_title': 'GeekShop - Регистрация',
         'today': datetime.now(),
         'register_form': register_form,
+        'username': request.user.username,
+        'is_superuser': request.user.is_superuser,
     }
     return render(request, 'authapp/register.html', context)
 
@@ -63,7 +70,9 @@ def profile(request):
         'page_title': 'GeekShop - Профиль',
         'today': datetime.now(),
         'profile_form': profile_form,
-        'basket': basket
+        'basket': basket,
+        'username': request.user.username,
+        'is_superuser': request.user.is_superuser,
     }
     return render(request, 'authapp/profile.html', context)
 
@@ -71,4 +80,3 @@ def profile(request):
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect(reverse('products:index'))
-

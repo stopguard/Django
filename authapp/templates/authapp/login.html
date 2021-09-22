@@ -44,8 +44,12 @@
                                     <form action="{% url 'auth:login' %}" method="post">
                                         {% csrf_token %}
                                         {{ form.as_p }}
-                                        <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
-                                            <a class="small" href="#">Забыли пароль?</a>
+                                        {% if previous_page %}
+                                            <input type="hidden" name="previous_page" value="{{ previous_page }}">
+                                        {% endif %}
+                                        <div class="form-group d-flex align-items-center
+                                        justify-content-between mt-4 mb-0">
+                                            <a class="small" href="#" style="display: none">Забыли пароль?</a>
                                             <input class="btn btn-primary" type="submit" value="Авторизоваться">
                                         </div>
                                     </form>

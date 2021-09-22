@@ -1,0 +1,27 @@
+{% for item in products %}
+    <div class="card mb-3"
+         style="{% if not item.is_active or not item.category.is_active %}opacity: 0.3{% endif %}">
+        <div class="card-body">
+            <h5 class="card-title">{{ item.name }}</h5>
+            <p class="card-text">{{ item.description }}</p>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item bg-light">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <span>{{ item.price }}</span> руб.
+                    </div>
+                    <div>
+                        <a href="#" type="button" id="{{ item.id }}"
+                           class="btn btn-secondary float-right adminapp-add-to-basket">
+                            Добавить товар
+                        </a>
+                    </div>
+                    <div class="col-lg-4">
+                        Кол-во: {{ item.quantity }}
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+{% endfor %}

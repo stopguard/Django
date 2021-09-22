@@ -86,8 +86,8 @@
                                     <p class="card-text">{{ product.description }}</p>
                                 </div>
                                 <div class="card-footer text-center">
-                                    <a href="{% url 'basket:add' product.id %}"
-                                       class="btn btn-outline-success">Отправить в корзину</a>
+                                    <a href="{% url 'basket:add' product.id 0 %}" id="{{ product.id }}"
+                                       class="btn btn-outline-success add-to-basket">Отправить в корзину</a>
                                 </div>
                             </div>
                         </div>
@@ -126,4 +126,8 @@
         </div>
         <!-- /.container -->
     </footer>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/basketadd.js' %}"></script>
 {% endblock %}
