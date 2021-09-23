@@ -30,8 +30,6 @@ def login(request):
         'today': datetime.now(),
         'form': form,
         'previous_page': previous_page,
-        'username': request.user.username,
-        'is_superuser': request.user.is_superuser,
     }
     return render(request, 'authapp/login.html', context)
 
@@ -49,8 +47,6 @@ def register(request):
         'page_title': 'GeekShop - Регистрация',
         'today': datetime.now(),
         'register_form': register_form,
-        'username': request.user.username,
-        'is_superuser': request.user.is_superuser,
     }
     return render(request, 'authapp/register.html', context)
 
@@ -71,8 +67,7 @@ def profile(request):
         'today': datetime.now(),
         'profile_form': profile_form,
         'basket': basket,
-        'username': request.user.username,
-        'is_superuser': request.user.is_superuser,
+        'object': request.user
     }
     return render(request, 'authapp/profile.html', context)
 

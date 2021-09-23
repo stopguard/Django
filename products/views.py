@@ -11,8 +11,6 @@ def index(request):
     context = {
         'page_title': 'geekshop',
         'today': datetime.now(),
-        'username': request.user.username,
-        'is_superuser': request.user.is_superuser,
     }
     return render(request, 'index.html', context)
 
@@ -33,7 +31,5 @@ def products(request, cat_id=0):
         'category': category,
         'products': db_products,
         'categories': db_categories,
-        'username': request.user.username,
-        'is_superuser': request.user.is_superuser,
     }
     return render(request, 'products.html', context)
