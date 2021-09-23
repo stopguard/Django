@@ -10,6 +10,11 @@ class ProductsCategory(models.Model):
     def __str__(self):
         return self.name
 
+    def delete(self, using=None, keep_parents=False):
+        if self.is_active:
+            self.is_active = False
+            self.save(using=using)
+
 
 class Product(models.Model):
     category = models.ForeignKey(ProductsCategory, on_delete=models.CASCADE)

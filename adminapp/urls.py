@@ -28,7 +28,7 @@ urlpatterns = [
     path('users/profile/show_products/', adminapp.show_products),           # AJAX
     path('categories/', adminapp.Categories.as_view(), name='categories'),
     path('categories/edit/<int:pk>/', adminapp.CategoryEdit.as_view(), name='category_edit'),
-    path('categories/delete/<int:cat_id>/', adminapp.category_delete, name='category_delete'),
+    path('categories/delete/<int:pk>/', adminapp.CategoryDelete.as_view(), name='category_delete'),
     path('categories/restore/<int:cat_id>/', adminapp.category_restore, name='category_restore'),
     path('categories/create/', adminapp.CategoryCreate.as_view(), name='category_create'),
     path('products/', adminapp.products, name='products'),

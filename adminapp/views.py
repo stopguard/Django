@@ -8,7 +8,7 @@ from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, UpdateView, ListView
+from django.views.generic import CreateView, UpdateView, ListView, DeleteView
 
 from adminapp.forms import ShopUserEditForm, CategoryForm, ProductForm
 from authapp.forms import ShopUserRegisterForm
@@ -52,6 +52,7 @@ def users(request):
     context = {
         'page_title': 'Управление - пользователи',
         'today': datetime.now(),
+        'users': users_list
     }
     return render(request, 'adminapp/users/users.html', context)
 
@@ -167,9 +168,9 @@ def show_products(request):
 #     return render(request, 'adminapp/categories/templates/products/categories.html', context)
 
 
-class Categories(SuOnlyMixin, ListView):
+class Categories(SuOnlyMixin, ContextMixin, ListView):
     model = ProductsCategory
-    page_title = 'Управление - категории товаров',
+    page_title = 'Управление - категории товаров'
 
 
 # @user_passes_test(lambda user: user.is_superuser)
@@ -191,13 +192,13 @@ class Categories(SuOnlyMixin, ListView):
 #     return render(request, 'adminapp/categories/edit.html', context)
 
 
-class CategoryEdit(SuOnlyMixin, UpdateView):
+class CategoryEdit(SuOnlyMixin, ContextMixin, UpdateView):
     model = ProductsCategory
     form_class = CategoryForm
     success_url = reverse_lazy('auth_admin:categories')
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(object_list=object_list, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['page_title'] = f'Управление категорией {self.object.name}'
         return context
 
@@ -216,7 +217,28 @@ def category_delete(request, cat_id):
         'category_to_del': category,
         'today': datetime.now(),
     }
-    return render(request, 'adminapp/categories/delete.html', context)
+    return render(request, 'adminapp/categories/templates/products/delete.html', context)
+
+
+class CategoryDelete(SuOnlyMixin, ContextMixin, DeleteView):
+    model = ProductsCategory
+    success_url = reverse_lazy('auth_admin:categories')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = f'Удаление категории {self.object.name}'
+        return context
+
+
+@user_passes_test(lambda user: user.is_superuser)
+def products(request):
+    products_list = Product.objects.all()
+    context = {
+        'page_title': 'Управление - продукты',
+        'products': products_list,
+        'today': datetime.now(),
+    }
+    return render(request, 'adminapp/products/products.html', context)
 
 
 @user_passes_test(lambda user: user.is_superuser)
@@ -254,7 +276,7 @@ def category_restore(request, cat_id):
 #     return render(request, 'adminapp/categories/create.html', context)
 
 
-class CategoryCreate(SuOnlyMixin, CreateView):
+class CategoryCreate(SuOnlyMixin, ContextMixin, CreateView):
     model = ProductsCategory
     form_class = CategoryForm
     success_url = reverse_lazy('auth_admin:categories')
