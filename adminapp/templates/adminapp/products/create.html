@@ -20,6 +20,9 @@
                         </button>
                     </div>
                 {% endif %}
+
+                {{ block.super }}
+
                 <h4 class="mt-3 mb-3">Продукт</h4>
                 <form action="{% url 'auth_admin:product_create' %}"
                       method="post" enctype="multipart/form-data">

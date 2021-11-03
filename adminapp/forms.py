@@ -6,7 +6,7 @@ from authapp.forms import ShopUserProfileForm
 from products.models import ProductsCategory, Product
 
 
-class ShopUserEditForm(ShopUserProfileForm, UserChangeForm):
+class ShopUserEditForm(ShopUserProfileForm):
     email = forms_lib.EmailField(widget=forms_lib.EmailInput(
         attrs={'class': 'form-control py-4', 'readonly': False}))
     username = forms_lib.CharField(widget=forms_lib.TextInput(

@@ -1,0 +1,47 @@
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        {% if products.has_previous %}
+            <li class="page-item">
+                <a class="page-link" tabindex="-1"
+                   href="{% url 'products:category' category.pk %}?page={{ products.previous_page_number }}">
+                    Previous
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" tabindex="-1"
+                   href="#"
+                   aria-disabled="true">
+                    Previous
+                </a>
+            </li>
+        {% endif %}
+        {% for page in pages %}
+
+            <li class="page-item {% if page == page_num %}disabled{% endif %}">
+                <a class="page-link"
+                   href="{% url 'products:category' category.pk %}?page={{ page }}">
+                    {{ page }}
+                </a>
+            </li>
+
+        {% endfor %}
+
+        {% if products.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="{% url 'products:category' category.pk %}?page={{ products.next_page_number }}">
+                    Next
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link"
+                   href="#"
+                   aria-disabled="true">
+                    Next
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>

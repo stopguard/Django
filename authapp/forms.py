@@ -1,3 +1,6 @@
+import hashlib
+from random import random
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from django.forms import forms
@@ -15,7 +18,7 @@ class ShopUserLoginForm(AuthenticationForm):
 class ShopUserRegisterForm(UserCreationForm):
     class Meta:
         model = get_user_model()
-        fields = ('username', 'first_name', 'last_name', 'password1', 'password2', 'email', 'avatar')
+        fields = ('username', 'first_name', 'last_name', 'password1', 'password2', 'email', 'avatar', 'age')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -28,6 +31,20 @@ class ShopUserRegisterForm(UserCreationForm):
             raise forms.ValidationError('Длина имени пользователя должна быть не меньше 6 символов')
         return u_name
 
+    def clean_age(self):
+        u_age = self.cleaned_data['age']
+        if u_age < 18:
+            raise forms.ValidationError('Вы слишком молоды')
+        return u_age
+
+    def save(self):
+        user = super(ShopUserRegisterForm, self).save(commit=False)
+        user.is_active = False
+        salt = hashlib.sha1(str(random()).encode('utf8')).hexdigest()[:6]
+        user.activation_key = hashlib.sha1((user.email + salt).encode('utf-8')).hexdigest()
+        user.save()
+        return user
+
 
 class ShopUserProfileForm(UserChangeForm):
     first_name = forms_lib.CharField(widget=forms_lib.TextInput(attrs={'class': 'form-control py-4',
@@ -39,8 +56,9 @@ class ShopUserProfileForm(UserChangeForm):
                                                                     'readonly': True}))
     username = forms_lib.CharField(widget=forms_lib.TextInput(attrs={'class': 'form-control py-4',
                                                                      'readonly': True}))
-    avatar = forms_lib.ImageField(widget=forms_lib.FileInput(attrs={'class': 'custom-file-input'}), required=False)
+    avatar = forms_lib.ImageField(widget=forms_lib.FileInput(attrs={'class': 'form-control py-4'}), required=False)
+    age = forms_lib.IntegerField(widget=forms_lib.NumberInput(attrs={'class': 'form-control py-4'}))
 
     class Meta:
         model = get_user_model()
-        fields = ('username', 'first_name', 'last_name', 'email', 'avatar', 'password')
+        fields = ('username', 'first_name', 'last_name', 'email', 'avatar', 'age', 'password')

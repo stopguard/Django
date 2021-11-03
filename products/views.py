@@ -11,7 +11,6 @@ from products.models import ProductsCategory, Product
 def index(request):
     context = {
         'page_title': 'geekshop',
-        'today': datetime.now(),
     }
     return render(request, 'index.html', context)
 
@@ -28,7 +27,7 @@ def products(request, cat_id=0):
         db_products = Product.objects.filter(category_id=cat_id, is_active=True, quantity__gt=0).order_by('price')
 
     # paginator
-    products_pages = Paginator(db_products, 3)
+    products_pages = Paginator(db_products, 6)
     try:
         db_products = products_pages.page(page_num)
     except PageNotAnInteger:
@@ -39,7 +38,6 @@ def products(request, cat_id=0):
     page_list = list(range(1, products_pages.num_pages + 1))
     context = {
         'page_title': title,
-        'today': datetime.now(),
         'category': category,
         'pages': page_list,
         'page_num': page_num,

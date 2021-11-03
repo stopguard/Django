@@ -69,6 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'products.context_processors.today',
             ],
         },
     },
@@ -141,10 +142,9 @@ LOGIN_URL = '/auth/login/'
 
 
 # email settings
-DOMAIN_NAME = 'http://localhost:8000'
+DOMAIN_NAME = 'http://127.0.0.1:8000'
 
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = '25'
-EMAIL_HOST_USER = 'django@geekshop.local'
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'geekshop')
-EMAIL_USE_SSL = False
+EMAIL_HOST = 'smtp.mailtrap.io'
+EMAIL_HOST_USER = '6121e22f25f2aa'
+EMAIL_HOST_PASSWORD = 'c73eeee3e975f6'
+EMAIL_PORT = '2525'

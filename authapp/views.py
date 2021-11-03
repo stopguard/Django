@@ -1,6 +1,5 @@
-from datetime import datetime
-
 from django.contrib import auth, messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -10,7 +9,6 @@ from authapp.forms import ShopUserLoginForm, ShopUserRegisterForm, ShopUserProfi
 from basketapp.models import Basket
 
 
-# Create your views here.
 def login(request):
     previous_page = request.GET.get('next', '')
     if request.method == 'POST':
@@ -27,7 +25,6 @@ def login(request):
         form = ShopUserLoginForm()
     context = {
         'page_title': 'GeekShop - Авторизация',
-        'today': datetime.now(),
         'form': form,
         'previous_page': previous_page,
     }
@@ -38,14 +35,20 @@ def register(request):
     if request.method == 'POST':
         register_form = ShopUserRegisterForm(data=request.POST, files=request.FILES)
         if register_form.is_valid():
-            register_form.save()
-            messages.success(request, 'Пользователь зарегистрирован!')
+            user = register_form.save()
+            if user.send_verify_mail():
+                messages.add_message(request,
+                                     messages.SUCCESS,
+                                     'Пользователь зарегистрирован!\n'
+                                     'На указанный email отправлено письмо со ссылкой для подтверждения регистрации')
+            else:
+                messages.add_message(request, messages.WARNING, 'Не удалось отправить письмо на указанный email')
+                user.delete()
             return HttpResponseRedirect(reverse('auth:login'))
     else:
         register_form = ShopUserRegisterForm()
     context = {
         'page_title': 'GeekShop - Регистрация',
-        'today': datetime.now(),
         'register_form': register_form,
     }
     return render(request, 'authapp/register.html', context)
@@ -57,14 +60,13 @@ def profile(request):
         profile_form = ShopUserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
         if profile_form.is_valid():
             profile_form.save()
-            messages.success(request, 'Профиль отредактирован!')
+            messages.add_message(request, messages.SUCCESS, 'Профиль отредактирован!')
             return HttpResponseRedirect(reverse('auth:profile'))
     else:
         profile_form = ShopUserProfileForm(instance=request.user)
     basket = Basket.objects.filter(user=request.user)
     context = {
         'page_title': 'GeekShop - Профиль',
-        'today': datetime.now(),
         'profile_form': profile_form,
         'basket': basket,
         'object': request.user
@@ -74,4 +76,20 @@ def profile(request):
 
 def logout(request):
     auth.logout(request)
+    return HttpResponseRedirect(reverse('products:index'))
+
+
+def verify_mail(request, username, activation_key):
+    try:
+        user = get_user_model().objects.get(username=username)  # использовал имя пользователя т.к. email не unique
+        if user.activation_key == activation_key and not user.is_activation_key_expired:
+            user.is_active = True
+            user.save()
+            auth.login(request, user)
+            messages.add_message(request, messages.SUCCESS, 'Учётная запись подтверждена! Добро пожаловать!')
+            return HttpResponseRedirect(reverse('products:products'))
+        messages.add_message(request, messages.WARNING, f'Ошибка активации пользователя {user.username}!\n'
+                                                        f'Неверная ссылка или ключ активации истёк.')
+    except Exception as e:
+        messages.add_message(request, messages.WARNING, f'error activation user: {e.args}')
     return HttpResponseRedirect(reverse('products:index'))
