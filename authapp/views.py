@@ -7,10 +7,14 @@ from django.urls import reverse
 
 from authapp.forms import ShopUserLoginForm, ShopUserRegisterForm, ShopUserProfileForm
 from basketapp.models import Basket
+from geekshop.settings import SOCIAL_AUTH_VK_OAUTH2_SECRET, SOCIAL_AUTH_VK_OAUTH2_KEY, VK_SECRETS
 
 
 def login(request):
     previous_page = request.GET.get('next', '')
+    print(VK_SECRETS)
+    print(SOCIAL_AUTH_VK_OAUTH2_KEY)
+    print(SOCIAL_AUTH_VK_OAUTH2_SECRET)
     if request.method == 'POST':
         form = ShopUserLoginForm(data=request.POST)
         if form.is_valid():
@@ -19,7 +23,7 @@ def login(request):
             previous_page = request.POST.get('previous_page')
             user = auth.authenticate(username=username, password=password)
             if user and user.is_active:
-                auth.login(request, user)
+                auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 return HttpResponseRedirect(previous_page or reverse('products:index'))
     else:
         form = ShopUserLoginForm()
@@ -85,7 +89,7 @@ def verify_mail(request, username, activation_key):
         if user.activation_key == activation_key and not user.is_activation_key_expired:
             user.is_active = True
             user.save()
-            auth.login(request, user)
+            auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             messages.add_message(request, messages.SUCCESS, 'Учётная запись подтверждена! Добро пожаловать!')
             return HttpResponseRedirect(reverse('products:products'))
         messages.add_message(request, messages.WARNING, f'Ошибка активации пользователя {user.username}!\n'

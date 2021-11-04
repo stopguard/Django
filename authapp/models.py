@@ -14,7 +14,7 @@ from geekshop import settings
 
 class ShopUser(AbstractUser):
     avatar = models.ImageField(upload_to='users_avatars', blank=True)
-    age = models.IntegerField('Возраст')
+    age = models.IntegerField('Возраст', default=18)
     activation_key = models.CharField(max_length=128, blank=True)
 
     def user_basket_count(self):
@@ -42,3 +42,18 @@ class ShopUser(AbstractUser):
                   f'{settings.DOMAIN_NAME} перейдите по ссылке:\n' \
                   f'{settings.DOMAIN_NAME}{verify_link}'
         return send_mail(title, message, settings.EMAIL_HOST_USER, [self.email], fail_silently=False)
+
+
+class UserProfile(models.Model):
+    MALE = 'M'
+    FEMALE = 'W'
+
+    GENDER_CHOICES = (
+        (MALE, 'мужской'),
+        (FEMALE, 'женский'),
+    )
+
+    user = models.OneToOneField(ShopUser, primary_key=True, on_delete=models.CASCADE)
+    tagline = models.CharField(verbose_name='теги', max_length=128, blank=True)
+    about_me = models.TextField(verbose_name='о себе', blank=True)
+    gender = models.CharField(verbose_name='пол', max_length=1, choices=GENDER_CHOICES, blank=True)

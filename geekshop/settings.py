@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+import json
 import os
 from pathlib import Path
 
@@ -43,6 +44,9 @@ INSTALLED_APPS = [
     'authapp',
     'basketapp',
     'adminapp',
+
+    # auth module
+    'social_django'
 ]
 
 MIDDLEWARE = [
@@ -148,3 +152,19 @@ EMAIL_HOST = 'smtp.mailtrap.io'
 EMAIL_HOST_USER = '6121e22f25f2aa'
 EMAIL_HOST_PASSWORD = 'c73eeee3e975f6'
 EMAIL_PORT = '2525'
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'social_core.backends.vk.VKOAuth2',
+)
+
+SOCIAL_SECRETS_FILE = 'geekshop/social_api_settings.json'
+SOCIAL = {}
+if os.path.exists(SOCIAL_SECRETS_FILE):
+    print('secrets load success')
+    with open(SOCIAL_SECRETS_FILE, 'r') as f:
+        SOCIAL = json.load(f)
+
+VK_SECRETS = SOCIAL.get('vk', '')
+SOCIAL_AUTH_VK_OAUTH2_KEY = VK_SECRETS.get('app_id', '')
+SOCIAL_AUTH_VK_OAUTH2_SECRET = VK_SECRETS.get('app_secret', '')

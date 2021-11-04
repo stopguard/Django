@@ -2,3 +2,4 @@
 __pycache__/
 Lib/
 Scripts/
+geekshop/social_api_settings.json
