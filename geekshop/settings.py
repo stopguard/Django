@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-r-#gu0i_6nc90gqnha7&)cn7x+a=_s)$=0e3#ap@ibt**7ql1g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', ]
 
 
 # Application definition
@@ -57,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'geekshop.urls'
@@ -74,6 +75,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'products.context_processors.today',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -143,28 +146,46 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 AUTH_USER_MODEL = 'authapp.ShopUser'
 LOGIN_URL = '/auth/login/'
+LOGIN_ERROR_URL = r'/'
 
-
-# email settings
-DOMAIN_NAME = 'http://127.0.0.1:8000'
-
-EMAIL_HOST = 'smtp.mailtrap.io'
-EMAIL_HOST_USER = '6121e22f25f2aa'
-EMAIL_HOST_PASSWORD = 'c73eeee3e975f6'
-EMAIL_PORT = '2525'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'social_core.backends.vk.VKOAuth2',
 )
 
-SOCIAL_SECRETS_FILE = 'geekshop/social_api_settings.json'
-SOCIAL = {}
-if os.path.exists(SOCIAL_SECRETS_FILE):
-    print('secrets load success')
-    with open(SOCIAL_SECRETS_FILE, 'r') as f:
-        SOCIAL = json.load(f)
+SECRETS_FILE = 'geekshop/private_settings.json'
+SECRETS = {}
+if os.path.exists(SECRETS_FILE):
+    with open(SECRETS_FILE, 'r') as f:
+        SECRETS = json.load(f)
+        print('secrets read success')
 
-VK_SECRETS = SOCIAL.get('vk', '')
+VK_SECRETS = SECRETS.get('vk', {})
 SOCIAL_AUTH_VK_OAUTH2_KEY = VK_SECRETS.get('app_id', '')
 SOCIAL_AUTH_VK_OAUTH2_SECRET = VK_SECRETS.get('app_secret', '')
+SOCIAL_AUTH_VK_OAUTH2_IGNORE_DEFAULT_SCOPE = True
+SOCIAL_AUTH_VK_OAUTH2_SCOPE = ('email', )
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.create_user',
+    'authapp.pipeline.save_user_profile',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
+
+# email settings
+DOMAIN_NAME = 'http://0.0.0.0:8000'
+
+EMAIL_HOST = 'smtp.mailtrap.io'
+EMAIL_PORT = '2525'
+
+EMAIL_SECRETS = SECRETS.get('email', {})
+
+EMAIL_HOST_USER = EMAIL_SECRETS.get('user', '')
+EMAIL_HOST_PASSWORD = EMAIL_SECRETS.get('password', '')

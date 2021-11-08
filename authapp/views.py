@@ -1,20 +1,18 @@
 from django.contrib import auth, messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from authapp.forms import ShopUserLoginForm, ShopUserRegisterForm, ShopUserProfileForm
+from authapp.forms import ShopUserLoginForm, ShopUserRegisterForm, ShopUserProfileForm, UserProfileForm
 from basketapp.models import Basket
 from geekshop.settings import SOCIAL_AUTH_VK_OAUTH2_SECRET, SOCIAL_AUTH_VK_OAUTH2_KEY, VK_SECRETS
 
 
 def login(request):
     previous_page = request.GET.get('next', '')
-    print(VK_SECRETS)
-    print(SOCIAL_AUTH_VK_OAUTH2_KEY)
-    print(SOCIAL_AUTH_VK_OAUTH2_SECRET)
     if request.method == 'POST':
         form = ShopUserLoginForm(data=request.POST)
         if form.is_valid():
@@ -59,18 +57,22 @@ def register(request):
 
 
 @login_required
+@transaction.atomic
 def profile(request):
     if request.method == 'POST':
-        profile_form = ShopUserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
-        if profile_form.is_valid():
-            profile_form.save()
+        user_form = ShopUserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
+        profile_form = UserProfileForm(data=request.POST, instance=request.user.userprofile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
             messages.add_message(request, messages.SUCCESS, 'Профиль отредактирован!')
             return HttpResponseRedirect(reverse('auth:profile'))
     else:
-        profile_form = ShopUserProfileForm(instance=request.user)
+        user_form = ShopUserProfileForm(instance=request.user)
+        profile_form = UserProfileForm(instance=request.user.userprofile)
     basket = Basket.objects.filter(user=request.user)
     context = {
         'page_title': 'GeekShop - Профиль',
+        'user_form': user_form,
         'profile_form': profile_form,
         'basket': basket,
         'object': request.user

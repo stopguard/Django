@@ -3,8 +3,10 @@ from random import random
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
-from django.forms import forms
+from django.forms import forms, ModelForm
 from django import forms as forms_lib
+
+from authapp.models import UserProfile
 
 
 class ShopUserLoginForm(AuthenticationForm):
@@ -47,18 +49,40 @@ class ShopUserRegisterForm(UserCreationForm):
 
 
 class ShopUserProfileForm(UserChangeForm):
-    first_name = forms_lib.CharField(widget=forms_lib.TextInput(attrs={'class': 'form-control py-4',
-                                                                       'placeholder': 'Введите имя'}), required=False)
-    last_name = forms_lib.CharField(widget=forms_lib.TextInput(attrs={'class': 'form-control py-4',
-                                                                      'placeholder': 'Введите фамилию'}),
-                                    required=False)
-    email = forms_lib.EmailField(widget=forms_lib.EmailInput(attrs={'class': 'form-control py-4',
-                                                                    'readonly': True}))
-    username = forms_lib.CharField(widget=forms_lib.TextInput(attrs={'class': 'form-control py-4',
-                                                                     'readonly': True}))
-    avatar = forms_lib.ImageField(widget=forms_lib.FileInput(attrs={'class': 'form-control py-4'}), required=False)
-    age = forms_lib.IntegerField(widget=forms_lib.NumberInput(attrs={'class': 'form-control py-4'}))
+    first_name = forms_lib.CharField(
+        widget=forms_lib.TextInput(attrs={'class': 'form-control py-2', 'placeholder': 'Введите имя'}),
+        required=False)
+    last_name = forms_lib.CharField(
+        widget=forms_lib.TextInput(attrs={'class': 'form-control py-2', 'placeholder': 'Введите фамилию'}),
+        required=False)
+    email = forms_lib.EmailField(
+        widget=forms_lib.EmailInput(attrs={'class': 'form-control py-2', 'readonly': True}),
+        required=False)
+    username = forms_lib.CharField(
+        widget=forms_lib.TextInput(attrs={'class': 'form-control py-2', 'readonly': True}))
+    avatar = forms_lib.ImageField(
+        widget=forms_lib.FileInput(attrs={'class': 'form-control py-2'}),
+        required=False)
+    age = forms_lib.IntegerField(
+        widget=forms_lib.NumberInput(attrs={'class': 'form-control py-2'}))
 
     class Meta:
         model = get_user_model()
         fields = ('username', 'first_name', 'last_name', 'email', 'avatar', 'age', 'password')
+
+
+class UserProfileForm(ModelForm):
+    tagline = forms_lib.CharField(
+        widget=forms_lib.TextInput(attrs={'class': 'form-control py-2', 'placeholder': 'Теги'}),
+        required=False)
+    about_me = forms_lib.CharField(
+        widget=forms_lib.Textarea(attrs={'class': 'form-control py-2', 'placeholder': 'О себе', 'rows': '3'}),
+        required=False)
+    gender = forms_lib.ChoiceField(
+        widget=forms_lib.Select(attrs={'class': 'form-control py-2', 'placeholder': 'Пол'}),
+        choices=UserProfile.GENDER_CHOICES,
+        required=False)
+
+    class Meta:
+        model = UserProfile
+        fields = ('tagline', 'about_me', 'gender')

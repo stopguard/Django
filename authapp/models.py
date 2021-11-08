@@ -6,6 +6,8 @@ from django.contrib.auth.models import AbstractUser
 
 
 # Create your models here.
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.timezone import now
 
@@ -57,3 +59,16 @@ class UserProfile(models.Model):
     tagline = models.CharField(verbose_name='теги', max_length=128, blank=True)
     about_me = models.TextField(verbose_name='о себе', blank=True)
     gender = models.CharField(verbose_name='пол', max_length=1, choices=GENDER_CHOICES, blank=True)
+
+
+# signals
+@receiver(post_save, sender=ShopUser)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+
+
+@receiver(post_save, sender=ShopUser)
+def save_user_profile(sender, instance, **kwargs):
+    instance.userprofile.save()
+
