@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-r-#gu0i_6nc90gqnha7&)cn7x+a=_s)$=0e3#ap@ibt**7ql1g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', ]
 
@@ -146,7 +146,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 AUTH_USER_MODEL = 'authapp.ShopUser'
 LOGIN_URL = '/auth/login/'
-LOGIN_ERROR_URL = r'/'
+LOGIN_ERROR_URL = '/'
 
 
 AUTHENTICATION_BACKENDS = (

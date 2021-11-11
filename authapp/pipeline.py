@@ -1,12 +1,3 @@
-"""
-interests
-sex
-about
-bdate
-personal['langs']
-"https://vk.com/" + domain
-photo_max_orig
-"""
 from collections import OrderedDict
 from datetime import datetime
 from urllib.parse import urlunparse, urlencode
@@ -26,7 +17,8 @@ def save_user_profile(backend, user, response, *args, **kwargs):
                           'api.vk.com',
                           '/method/users.get',
                           None,
-                          urlencode(OrderedDict(fields=','.join(('bdate', 'sex', 'about')),
+                          urlencode(OrderedDict(fields=','.join(('bdate', 'sex', 'about', 'interests',
+                                                                 'personal', 'domain', 'photo_max_orig')),
                                                 access_token=response['access_token'],
                                                 v='5.131')),
                           None
@@ -37,18 +29,39 @@ def save_user_profile(backend, user, response, *args, **kwargs):
         return
 
     data = resp.json()['response'][0]
-    if data['sex']:
-        user.shopuserprofile.gender = UserProfile.MALE if data['sex'] == 2 else UserProfile.FEMALE
+    sex = data.get('sex', '')
+    if sex:
+        user.userprofile.gender = UserProfile.MALE if sex == 2 else UserProfile.FEMALE
 
-    if data['about']:
-        user.shopuserprofile.aboutMe = data['about']
+    about = data.get('about', '')
+    if about:
+        user.userprofile.about_me = about
 
-    if data['bdate']:
-        bdate = datetime.strptime(data['bdate'], '%d.%m.%Y').date()
+    data_bdate = data.get('bdate', '')
+    if data_bdate:
+        bdate = datetime.strptime(data_bdate, '%d.%m.%Y').date()
 
         age = now().date().year - bdate.year
         if age < 18:
             user.delete()
             raise AuthForbidden('social_core.backends.vk.VKOAuth2')
+        user.age = age
+
+    interests = data.get('interests', '')
+    if interests:
+        user.userprofile.tagline = interests
+
+    personal = data.get('personal', {})
+    langs = ', '.join(personal.get('langs', ''))
+    if langs:
+        user.userprofile.about_me += f'\nЯзыки: {langs}'
+
+    domain = data.get('domain', '')
+    if domain:
+        user.userprofile.about_me += f'\nhttps://vk.com/{domain}/'
+
+    photo_max_orig = data.get('photo_max_orig', '')
+    if photo_max_orig:
+        user.avatar = photo_max_orig
 
     user.save()
