@@ -27,6 +27,13 @@
                                 Профиль и корзина
                             </a>
                         </li>
+                        <li>
+                            <a class="dropdown-item userprofile"
+                               href="{% url 'orders:index' %}">
+                                <i class="fas fa-tasks"></i>
+                                Заказы
+                            </a>
+                        </li>
                         {% if user.is_superuser %}
                             <li class="hidden">
                                 <a class="dropdown-item" href="/admin/">

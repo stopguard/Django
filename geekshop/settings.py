@@ -44,9 +44,10 @@ INSTALLED_APPS = [
     'authapp',
     'basketapp',
     'adminapp',
+    'ordersapp',
 
     # auth module
-    'social_django'
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -180,7 +181,7 @@ SOCIAL_AUTH_PIPELINE = (
 )
 
 # email settings
-DOMAIN_NAME = 'http://0.0.0.0:8000'
+DOMAIN_NAME = 'http://127.0.0.1:8000'
 
 EMAIL_HOST = 'smtp.mailtrap.io'
 EMAIL_PORT = '2525'

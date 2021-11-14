@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -45,6 +46,9 @@ class ShopUser(AbstractUser):
                   f'{settings.DOMAIN_NAME}{verify_link}'
         return send_mail(title, message, settings.EMAIL_HOST_USER, [self.email], fail_silently=False)
 
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
+
 
 class UserProfile(models.Model):
     MALE = 'M'
@@ -55,14 +59,14 @@ class UserProfile(models.Model):
         (FEMALE, 'женский'),
     )
 
-    user = models.OneToOneField(ShopUser, primary_key=True, on_delete=models.CASCADE)
-    tagline = models.CharField(verbose_name='теги', max_length=128, blank=True)
-    about_me = models.TextField(verbose_name='о себе', blank=True)
-    gender = models.CharField(verbose_name='пол', max_length=1, choices=GENDER_CHOICES, blank=True)
+    user = models.OneToOneField(get_user_model(), primary_key=True, on_delete=models.CASCADE)
+    tagline = models.CharField('теги', max_length=128, blank=True)
+    about_me = models.TextField('о себе', blank=True)
+    gender = models.CharField('пол', max_length=1, choices=GENDER_CHOICES, blank=True)
 
 
 # signals
-@receiver(post_save, sender=ShopUser)
+@receiver(post_save, sender=get_user_model())
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         UserProfile.objects.create(user=instance)
