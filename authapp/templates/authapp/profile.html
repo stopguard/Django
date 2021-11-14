@@ -141,7 +141,7 @@
 
                 {% if basket %}
                     {% include 'basket/basket.html' %}
-                    <button type="button" class="btn btn-success btn-lg float-right">Оформить</button>
+                    <a href="{% url 'orders:create' %}" class="btn btn-success btn-lg float-right">Оформить</a>
                 {% else %}
                     <div class="card mb-3">
                         <div class="card-footer">

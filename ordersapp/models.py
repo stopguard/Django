@@ -12,7 +12,7 @@ class Order(models.Model):
 
     STATUS_CHOICES = (
         (FORMING, 'создан'),
-        (SENT, 'отправлен'),
+        (SENT, 'оплачен'),
         (APPROVED, 'подтверждён'),
         (REJECTED, 'отменён'),
     )
@@ -43,6 +43,7 @@ class Order(models.Model):
     def delete(self, using=None, keep_parents=False, safe=True):
         if safe:
             self.is_active = False
+            self.status = self.REJECTED
             self.save()
             return
         super().delete(using=using, keep_parents=keep_parents)
