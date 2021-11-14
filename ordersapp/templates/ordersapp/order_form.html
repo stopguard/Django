@@ -32,16 +32,16 @@
                     <thead>
                     <tr>
                         <th>Продукт</th>
-                        {#<th>Цена</th>#}
                         <th>Кол-во</th>
+                        <th>Цена</th>
                         <th>Удалить</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
                         <th>Продукт</th>
-                        {#<th>Цена</th>#}
                         <th>Кол-во</th>
+                        <th>Цена</th>
                         <th>Удалить</th>
                     </tr>
                     </tfoot>
@@ -56,7 +56,11 @@
                                         {% endfor %}
                                     {% endif %}
                                     {{ field.errors.as_ul }}
-                                    {{ field }}
+                                    {% if field.name == 'price' %}
+                                        {{ field.value|default:"0,00" }}р.
+                                    {% else %}
+                                        {{ field }}
+                                    {% endif %}
                                 </td>
                             {% endfor %}
                         </tr>
@@ -71,3 +75,8 @@
         </div>
     </form>
 {% endblock %}
+
+{% block orders_js %}
+
+{% endblock %}
+

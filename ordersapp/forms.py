@@ -1,4 +1,4 @@
-from django.forms import ModelForm, HiddenInput
+from django.forms import ModelForm, HiddenInput, FloatField
 
 from ordersapp.models import Order, OrderItem
 
@@ -19,6 +19,8 @@ class OrderForm(BaseOrderForm):
 
 
 class OrderItemForm(BaseOrderForm):
+    price = FloatField(required=False)
+
     class Meta:
         model = OrderItem
         fields = '__all__'
