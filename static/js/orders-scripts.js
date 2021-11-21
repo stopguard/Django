@@ -15,6 +15,7 @@ let orderTotalCost;
 let $orderTotalQuantityDOM;
 let $orderTotalCost;
 let $orderForm;
+let API_PATH = '/products/price/'
 
 function parseOrderForm() {
     quantityArr = [];
@@ -22,7 +23,8 @@ function parseOrderForm() {
     for (let i = 0; i < totalForms; i++) {
         const $quantity = document.querySelector(`input[name="items-${i}-count"]`);
         let quantity = parseInt($quantity.value);
-        const $price = document.querySelector(`.item-${i}-price`);
+        const $row = $quantity.parentNode.parentNode
+        const $price = $row.querySelector('span.item-price');
         let price = parseFloat($price.textContent.replace(',', '.'));
         price = price ? price : 0;
         quantityArr.push(quantity);
@@ -41,12 +43,12 @@ function updateTotalQuantity() {
     orderTotalCost = 0;
     quantityArr.forEach((el, idx) => {
         orderTotalQuantity += el;
-        orderTotalCost += el * priceArr(idx);
+        orderTotalCost += el * priceArr[idx];
     });
     renderSummary();
 }
 
-function orderSummaryUpdate(orderItemPrice) {
+function orderCountUpdate(orderItemPrice) {
     orderTotalQuantity += deltaQuantity;
     deltaCost = orderItemPrice * deltaQuantity;
     orderTotalCost += deltaCost;
@@ -55,14 +57,60 @@ function orderSummaryUpdate(orderItemPrice) {
 
 function deleteOrderItem(row) {
     let targetName = row[0].querySelector('input[type="number"]').name;
-    orderItemNum = parseInt(targetName.match(/\d+/)[0]);
+    orderItemNum = numExtractor(targetName);
     let quantity = quantityArr[orderItemNum];
     deltaQuantity = -quantity;
-    orderSummaryUpdate(quantity);
+    orderCountUpdate(priceArr[orderItemNum]);
 }
 
 function getItemNumber(e) {
-    return parseInt(e.target.name.match(/\d+/)[0]);
+    return numExtractor(e.target.name);
+}
+
+function numExtractor(str) {
+    return parseInt(str.match(/\d+/)[0]);
+}
+
+function onCountCorrection(e) {
+    orderItemNum = getItemNumber(e);
+    let price = priceArr[orderItemNum];
+    if (price) {
+        orderItemQuantity = e.target.value;
+        deltaQuantity = orderItemQuantity - quantityArr[orderItemNum];
+        quantityArr[orderItemNum] = orderItemQuantity
+        orderCountUpdate(price);
+    }
+}
+
+function onSelectChange(e) {
+    let target = e.target;
+    let product_id = target.value;
+    let itemNumber = getItemNumber(e);
+    fetch(`${API_PATH}${product_id}/`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json;charset=utf-8",
+                "X-Requested-With": "XMLHttpRequest",
+            },
+        })
+        .then((response) => {
+            return response.json();
+        })
+        .then((request) => {
+            let $row = target.parentNode.parentNode
+            let $itemPrice = $row.querySelector('span.item-price');
+            let newPrice = request.price || '0';
+            newPrice = isNaN(newPrice) ? '0' : newPrice;
+            $itemPrice.textContent = newPrice.replace('.', ',');
+            newPrice = parseFloat(newPrice)
+            let oldPrice = priceArr[itemNumber];
+            let count = quantityArr[itemNumber];
+            deltaCost = newPrice * count - oldPrice * count;
+            orderTotalCost += deltaCost;
+            priceArr[itemNumber] = newPrice;
+            renderSummary();
+        });
 }
 
 function onLoad() {
@@ -86,16 +134,10 @@ function onLoad() {
 
     $orderForm = document.querySelector('.order-form');
     $orderForm.addEventListener('change', function countSet(e) {
-        let targetType = e.target.type;
-        if (targetType === 'number') {
-            orderItemNum = getItemNumber(e);
-            let price = priceArr[orderItemNum];
-            if (price) {
-                orderItemQuantity = e.target.value;
-                deltaQuantity = orderItemQuantity - quantityArr[orderItemNum];
-                quantityArr[orderItemNum] = orderItemQuantity
-                orderSummaryUpdate(price);
-            }
+        if (e.target.type === 'number') {
+            onCountCorrection(e);
+        } else if (e.target.tagName === 'SELECT') {
+            onSelectChange(e);
         }
     });
 
@@ -105,6 +147,12 @@ function onLoad() {
         prefix: 'items',
         removed: deleteOrderItem
     });
+
+    let $addButton = document.querySelector('a.add-row');
+    $addButton.addEventListener('click', () => {
+        quantityArr.push(0);
+        priceArr.push(0);
+    })
 
 }
 

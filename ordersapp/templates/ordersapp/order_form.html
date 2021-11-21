@@ -62,7 +62,7 @@
                                     {{ field.errors.as_ul }}
 
                                     {% if field.name == 'price' %}
-                                        <span class="item-{{ forloop.parentloop.counter0 }}-{{ field.name }}">
+                                        <span class="item-price">
                                             {{ field.value|default:"0,00" }}</span>р.
                                     {% else %}
                                         {{ field }}
