@@ -1,20 +1,12 @@
 'use strict';
 
-let orderItemNum;
-let orderItemQuantity;
-let deltaQuantity;
-let deltaCost;
-let productPrices;
-let quantityArr;
-let priceArr;
+let orderItemNum, orderItemQuantity, deltaQuantity, deltaCost;
+let productPrices, quantityArr, priceArr;
 
-let totalForms;
-let orderTotalQuantity;
-let orderTotalCost;
+let totalForms, orderTotalQuantity, orderTotalCost;
 
-let $orderTotalQuantityDOM;
-let $orderTotalCost;
-let $orderForm;
+let $orderTotalQuantityDOM, $orderTotalCost, $orderForm;
+
 let API_PATH = '/products/price/'
 
 function parseOrderForm() {
