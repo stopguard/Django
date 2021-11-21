@@ -16,7 +16,7 @@ let $orderTotalQuantityDOM;
 let $orderTotalCost;
 let $orderForm;
 
-function parseOrderForm(totalForms) {
+function parseOrderForm() {
     quantityArr = [];
     priceArr = [];
     for (let i = 0; i < totalForms; i++) {
@@ -33,7 +33,7 @@ function parseOrderForm(totalForms) {
 function renderSummary() {
     $orderTotalQuantityDOM.textContent = orderTotalQuantity.toString();
     let totalCostStr = orderTotalCost.toFixed(2).toString();
-    $orderTotalCost.value = Number(totalCostStr.replace('.', ','));
+    $orderTotalCost.textContent = totalCostStr.replace('.', ',');
 }
 
 function updateTotalQuantity() {
@@ -61,9 +61,11 @@ function deleteOrderItem(row) {
     orderSummaryUpdate(quantity);
 }
 
+function getItemNumber(e) {
+    return parseInt(e.target.name.match(/\d+/)[0]);
+}
 
-
-window.onload = function onLoad() {
+function onLoad() {
     console.log('DOM loaded');
 
     const $totalForms = document.querySelector('input[name="items-TOTAL_FORMS"]');
@@ -86,7 +88,7 @@ window.onload = function onLoad() {
     $orderForm.addEventListener('change', function countSet(e) {
         let targetType = e.target.type;
         if (targetType === 'number') {
-            orderItemNum = parseInt(e.target.name.match(/\d+/)[0]);
+            orderItemNum = getItemNumber(e);
             let price = priceArr[orderItemNum];
             if (price) {
                 orderItemQuantity = e.target.value;
@@ -94,36 +96,6 @@ window.onload = function onLoad() {
                 quantityArr[orderItemNum] = orderItemQuantity
                 orderSummaryUpdate(price);
             }
-        } else if (targetType === 'checkbox') {
-            orderItemNum = parseInt(e.target.name.match(/\d+/)[0]);
-            if (e.target.checked) {
-                deltaQuantity = -quantityArr[orderItemNum];
-            } else {
-                deltaQuantity = quantityArr[orderItemNum];
-            }
-            orderSummaryUpdate(priceArr[orderItemNum]);
-        }
-    });
-
-    $orderForm.addEventListener('change', function countSet(e) {
-        let targetType = e.target.type;
-        let price = priceArr[orderItemNum];
-        orderItemNum = parseInt(e.target.name.match(/\d+/)[0]);
-        if (targetType === 'number') {
-            if (price) {
-                orderItemQuantity = e.target.value;
-                deltaQuantity = orderItemQuantity - quantityArr[orderItemNum];
-                quantityArr[orderItemNum] = orderItemQuantity
-                orderSummaryUpdate(price);
-            }
-        } else if (targetType === 'checkbox') {
-
-            if (e.target.checked) {
-                deltaQuantity = -quantityArr[orderItemNum];
-            } else {
-                deltaQuantity = quantityArr[orderItemNum];
-            }
-            orderSummaryUpdate(priceArr[orderItemNum]);
         }
     });
 
@@ -135,3 +107,5 @@ window.onload = function onLoad() {
     });
 
 }
+
+window.onload = onLoad
