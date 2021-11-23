@@ -1,0 +1,89 @@
+{% extends 'ordersapp/order_base.html' %}
+{% load static %}
+
+{% block order_table %}
+    <div class="card-header">
+        <i class="fas fa-table mr-1"></i>
+        Редактирование заказа
+    </div>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card-body">
+            <p>Заказчик: {{ user }}</p>
+            <p>Общее количество:
+                <span class="orderitems-total-count">
+                    {% if object %}
+                        {{ object.items_count }}
+                    {% else %}
+                        {{ user.user_basket_count }}
+                    {% endif %}
+                </span>
+            </p>
+            <p>Общая сумма:
+                <span class="order-total-cost">
+                    {% if object %}
+                        {{ object.items_cost }}
+                    {% else %}
+                        {{ user.user_basket_cost }}
+                    {% endif %}
+                </span>
+                р.
+            </p>
+            {{ form.as_p }}
+            <div class="table-responsive">
+                <table class="table table-bordered order-form" id="dataTable" width="100%" cellspacing="0">
+                    {{ orderitems.management_form }}
+                    <thead>
+                    <tr>
+                        <th>Продукт</th>
+                        <th>Кол-во</th>
+                        <th>Цена</th>
+                        <th>Удалить</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Продукт</th>
+                        <th>Кол-во</th>
+                        <th>Цена</th>
+                        <th>Удалить</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    {% for item_form in orderitems %}
+                        <tr class="formset-row">
+                            {% for field in item_form.visible_fields %}
+                                <td>
+                                    {% if forloop.first %}
+                                        {% for hidden in item_form.hidden_fields %}
+                                            {{ hidden }}
+                                        {% endfor %}
+                                    {% endif %}
+                                    {{ field.errors.as_ul }}
+
+                                    {% if field.name == 'price' %}
+                                        <span class="item-price">
+                                            {{ field.value|default:"0,00" }}</span>р.
+                                    {% else %}
+                                        {{ field }}
+                                    {% endif %}
+
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <input type="submit" class="btn btn-success" value="Сохранить">
+            <a class="btn btn-danger" href="{% url 'orders:index' %}">Отмена</a>
+        </div>
+    </form>
+{% endblock %}
+
+{% block orders_js %}
+    <script src="{% static 'js/jquery.formset.js' %}"></script>
+    <script src="{% static 'js/orders-scripts.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'ordersapp/order_base.html' %}
+{% load static %}
+
+{% block order_table %}
+    <div class="card-header">
+        <i class="fas fa-table mr-1"></i>
+        Заказы
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Добавлен</th>
+                    <th>Изменён</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th>№</th>
+                    <th>Добавлен</th>
+                    <th>Изменён</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                </tr>
+                </tfoot>
+                <tbody>
+                {% if object_list %}
+                    {% for item in object_list %}
+                        <tr style="{% if not item.is_active %}opacity: 0.3{% endif %}">
+                            <td>{{ item.id }}</td>
+                            <td class="text-center">{{ item.add_datetime|date:"d.m.Y H:i:s" }}</td>
+                            <td class="text-center">{{ item.update_datetime|date:"d.m.Y H:i:s" }}</td>
+                            <td>{{ item.get_status_display|title }}</td>
+                            <td>
+                                <a href="{% url 'orders:detail' item.id %}" class="btn btn-sm btn-outline-info">
+                                    Просмотреть
+                                </a>
+                                {% if item.is_forming %}
+                                    <a href="{% url 'orders:change' item.id %}"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        Изменить
+                                    </a>
+                                    <a href="{% url 'orders:del' item.id %}" class="btn btn-sm btn-outline-danger">
+                                        Удалить
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="4">
+                            Здесь пока ничего нет
+                        </td>
+                    </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer">
+        <a class="btn btn-success" href="{% url 'orders:create' %}">
+            Добавить заказ
+        </a>
+    </div>
+{% endblock %}

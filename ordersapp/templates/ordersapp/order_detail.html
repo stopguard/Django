@@ -1,0 +1,49 @@
+{% extends 'ordersapp/order_base.html' %}
+{% load static %}
+
+{% block order_table %}
+    <div class="card-header">
+        <i class="fas fa-table mr-1"></i>
+        {{ object }}: Детали
+    </div>
+    <div class="card-body">
+        <p>Заказчик: {{ user }}</p>
+        <p>Общее количество: <span>{{ object.items_count }}</span></p>
+        <p>Общая сумма: <span>{{ object.items_cost }}</span> р.</p>
+        <p>Статус: {{ object.get_status_display|capfirst }}</p>
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                <tr>
+                    <th>Продукт</th>
+                    <th>Цена</th>
+                    <th>Кол-во</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th>Продукт</th>
+                    <th>Цена</th>
+                    <th>Кол-во</th>
+                </tr>
+                </tfoot>
+                <tbody>
+                {% for item in object.items.all %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.sum_price }}</td>
+                        <td>{{ item.count }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer">
+        {% if object.is_forming %}
+            <a class="btn btn-success" href="{% url 'orders:confirm' object.id %}">Оплатить</a>
+        {% endif %}
+        <a class="btn btn-primary" href="{% url 'orders:index' %}">Вернуться к заказам</a>
+    </div>
+
+{% endblock %}

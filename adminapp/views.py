@@ -41,7 +41,6 @@ class ContextMixin:
 def index(request):
     context = {
         'page_title': 'Администрирование',
-        'today': datetime.now(),
     }
     return render(request, 'adminapp/index.html', context)
 
@@ -51,7 +50,6 @@ def users(request):
     users_list = get_user_model().objects.all()
     context = {
         'page_title': 'Управление - пользователи',
-        'today': datetime.now(),
         'users': users_list
     }
     return render(request, 'adminapp/users/users.html', context)
@@ -103,12 +101,11 @@ def user_delete(request, uid):
         if selected_user.is_active:
             selected_user.is_active = False
             selected_user.save()
-        messages.success(request, f'Пользователь {selected_user.username} удалён!')
+        messages.add_message(request, messages.SUCCESS, f'Пользователь {selected_user.username} удалён!')
         return HttpResponseRedirect(reverse('adminapp:users'))
     context = {
         'page_title': f'Удаление пользователя {selected_user.username}',
         'user_to_del': selected_user,
-        'today': datetime.now(),
     }
     return render(request, 'adminapp/users/delete.html', context)
 
@@ -120,12 +117,11 @@ def user_restore(request, uid):
         if not selected_user.is_active:
             selected_user.is_active = True
             selected_user.save()
-        messages.success(request, f'Пользователь {selected_user.username} восстановлен!')
+        messages.add_message(request, messages.SUCCESS, f'Пользователь {selected_user.username} восстановлен!')
         return HttpResponseRedirect(reverse('adminapp:users'))
     context = {
         'page_title': f'Восстановление пользователя {selected_user.username}',
         'user_to_restore': selected_user,
-        'today': datetime.now(),
     }
     return render(request, 'adminapp/users/restore.html', context)
 
@@ -136,13 +132,12 @@ def user_create(request):
         register_form = ShopUserRegisterForm(data=request.POST, files=request.FILES)
         if register_form.is_valid():
             register_form.save()
-            messages.success(request, 'Пользователь создан!')
+            messages.add_message(request, messages.SUCCESS, 'Пользователь создан!')
             return HttpResponseRedirect(reverse('adminapp:users'))
     else:
         register_form = ShopUserRegisterForm()
     context = {
         'page_title': 'Создание пользователя',
-        'today': datetime.now(),
         'register_form': register_form,
     }
     return render(request, 'adminapp/users/create.html', context)
@@ -203,21 +198,21 @@ class CategoryEdit(SuOnlyMixin, ContextMixin, UpdateView):
         return context
 
 
-@user_passes_test(lambda user: user.is_superuser)
-def category_delete(request, cat_id):
-    category = get_object_or_404(ProductsCategory, id=cat_id)
-    if not category.is_active or request.method == 'POST':
-        if category.is_active:
-            category.is_active = False
-            category.save()
-        messages.success(request, f'Категория {category.name} удалёна!')
-        return HttpResponseRedirect(reverse('auth_admin:categories'))
-    context = {
-        'page_title': f'Удаление категории {category.name}',
-        'category_to_del': category,
-        'today': datetime.now(),
-    }
-    return render(request, 'adminapp/categories/templates/products/delete.html', context)
+# @user_passes_test(lambda user: user.is_superuser)
+# def category_delete(request, cat_id):
+#     category = get_object_or_404(ProductsCategory, id=cat_id)
+#     if not category.is_active or request.method == 'POST':
+#         if category.is_active:
+#             category.is_active = False
+#             category.save()
+#         messages.success(request, f'Категория {category.name} удалёна!')
+#         return HttpResponseRedirect(reverse('auth_admin:categories'))
+#     context = {
+#         'page_title': f'Удаление категории {category.name}',
+#         'category_to_del': category,
+#         'today': datetime.now(),
+#     }
+#     return render(request, 'adminapp/categories/templates/products/delete.html', context)
 
 
 class CategoryDelete(SuOnlyMixin, ContextMixin, DeleteView):
@@ -236,7 +231,6 @@ def products(request):
     context = {
         'page_title': 'Управление - продукты',
         'products': products_list,
-        'today': datetime.now(),
     }
     return render(request, 'adminapp/products/products.html', context)
 
@@ -248,12 +242,11 @@ def category_restore(request, cat_id):
         if not category.is_active:
             category.is_active = True
             category.save()
-        messages.success(request, f'Категория {category.name} восстановлена!')
+        messages.add_message(request, messages.SUCCESS, f'Категория {category.name} восстановлена!')
         return HttpResponseRedirect(reverse('auth_admin:categories'))
     context = {
         'page_title': f'Восстановление категории {category.name}',
         'category_to_restore': category,
-        'today': datetime.now(),
     }
     return render(request, 'adminapp/categories/restore.html', context)
 
@@ -289,7 +282,6 @@ def products(request):
     context = {
         'page_title': 'Управление - продукты',
         'products': products_list,
-        'today': datetime.now(),
     }
     return render(request, 'adminapp/products/products.html', context)
 
@@ -301,12 +293,11 @@ def product_edit(request, prod_id):
         form = ProductForm(data=request.POST, files=request.FILES, instance=product)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Продукт отредактирован!')
+            messages.add_message(request, messages.SUCCESS, 'Продукт отредактирован!')
     else:
         form = ProductForm(instance=product)
     context = {
         'page_title': f'Управление продуктом {product.name}',
-        'today': datetime.now(),
         'form': form,
         'product': product,
     }
@@ -320,12 +311,11 @@ def product_delete(request, prod_id):
         if product.is_active:
             product.is_active = False
             product.save()
-        messages.success(request, 'Продукт удалён!')
+        messages.add_message(request, messages.SUCCESS, 'Продукт удалён!')
         return HttpResponseRedirect(reverse('auth_admin:products'))
     context = {
         'page_title': f'Удаление продукта {product.name}',
         'product_to_del': product,
-        'today': datetime.now(),
     }
     return render(request, 'adminapp/products/delete.html', context)
 
@@ -337,12 +327,11 @@ def product_restore(request, prod_id):
         if not product.is_active:
             product.is_active = True
             product.save()
-        messages.success(request, 'Продукт восстановлен!')
+        messages.add_message(request, messages.SUCCESS, 'Продукт восстановлен!')
         return HttpResponseRedirect(reverse('auth_admin:products'))
     context = {
         'page_title': f'Восстановление продукта {product.name}',
         'product_to_restore': product,
-        'today': datetime.now(),
     }
     return render(request, 'adminapp/products/restore.html', context)
 
@@ -353,13 +342,12 @@ def product_create(request):
         form = ProductForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Продукт создан!')
+            messages.add_message(request, messages.SUCCESS, 'Продукт создан!')
             return HttpResponseRedirect(reverse('auth_admin:products'))
     else:
         form = ProductForm()
     context = {
         'page_title': 'Создание продукта',
-        'today': datetime.now(),
         'form': form,
     }
     return render(request, 'adminapp/products/create.html', context)

@@ -1,6 +1,5 @@
 .idea/
 __pycache__/
-db.sqlite3
 Lib/
 Scripts/
-media/
+geekshop/private_settings.json

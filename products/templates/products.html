@@ -10,7 +10,7 @@
     <div class="container">
 
         <div class="row">
-
+            <!-- side menu -->
             <div class="col-lg-3">
 
                 <h1 class="my-4">GeekShop</h1>
@@ -33,42 +33,47 @@
                 </div>
 
             </div>
-            <!-- /.col-lg-3 -->
+            <!-- /side menu -->
 
             <div class="col-lg-9">
 
-                <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel">
-                    <ol class="carousel-indicators">
-                        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-                    </ol>
-                    <div class="carousel-inner" role="listbox">
-                        <div class="carousel-item active">
-                            <img class="d-block img-fluid" src="{% static 'vendor/img/slides/slide-1.jpg' %}"
-                                 alt="First slide">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="d-block img-fluid" src="{% static 'vendor/img/slides/slide-2.jpg' %}"
-                                 alt="Second slide">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="d-block img-fluid" src="{% static 'vendor/img/slides/slide-3.jpg' %}"
-                                 alt="Third slide">
-                        </div>
-                    </div>
-                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                    </a>
-                </div>
+                <!-- slider -->
+                {#                <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel">#}
+                {#                    <ol class="carousel-indicators">#}
+                {#                        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>#}
+                {#                        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>#}
+                {#                        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>#}
+                {#                    </ol>#}
+                {#                    <div class="carousel-inner" role="listbox">#}
+                {#                        <div class="carousel-item active">#}
+                {#                            <img class="d-block img-fluid" src="{% static 'vendor/img/slides/slide-1.jpg' %}"#}
+                {#                                 alt="First slide">#}
+                {#                        </div>#}
+                {#                        <div class="carousel-item">#}
+                {#                            <img class="d-block img-fluid" src="{% static 'vendor/img/slides/slide-2.jpg' %}"#}
+                {#                                 alt="Second slide">#}
+                {#                        </div>#}
+                {#                        <div class="carousel-item">#}
+                {#                            <img class="d-block img-fluid" src="{% static 'vendor/img/slides/slide-3.jpg' %}"#}
+                {#                                 alt="Third slide">#}
+                {#                        </div>#}
+                {#                    </div>#}
+                {#                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">#}
+                {#                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>#}
+                {#                        <span class="sr-only">Previous</span>#}
+                {#                    </a>#}
+                {#                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">#}
+                {#                        <span class="carousel-control-next-icon" aria-hidden="true"></span>#}
+                {#                        <span class="sr-only">Next</span>#}
+                {#                    </a>#}
+                {#                </div>#}
+                <!-- /slider -->
 
-                <div class="row">
+                <!-- products -->
 
+                {{ block.super }}
+
+                <div class="row mt-5">
 
                     {% for product in products %}
                         <div class="col-lg-4 col-md-6 mb-4">
@@ -93,63 +98,16 @@
                         </div>
                     {% endfor %}
 
-
                 </div>
+                <!-- /products -->
 
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-center">
-                        {% if products.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link" tabindex="-1"
-                                   href="{% url 'products:category' category.pk %}?page={{ products.previous_page_number }}">
-                                    Previous
-                                </a>
-                            </li>
-                        {% else %}
-                            <li class="page-item disabled">
-                                <a class="page-link" tabindex="-1"
-                                   href="#"
-                                   aria-disabled="true">
-                                    Previous
-                                </a>
-                            </li>
-                        {% endif %}
-                        {% for page in pages %}
-
-                            <li class="page-item {% if page == page_num %}disabled{% endif %}">
-                                <a class="page-link"
-                                   href="{% url 'products:category' category.pk %}?page={{ page }}">
-                                    {{ page }}
-                                </a>
-                            </li>
-
-                        {% endfor %}
-
-                        {% if products.has_next %}
-                            <li class="page-item">
-                                <a class="page-link"
-                                   href="{% url 'products:category' category.pk %}?page={{ products.next_page_number }}">
-                                    Next
-                                </a>
-                            </li>
-                        {% else %}
-                            <li class="page-item disabled">
-                                <a class="page-link"
-                                   href="#"
-                                   aria-disabled="true">
-                                    Next
-                                </a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </nav>
+                <!-- pagination -->
+                {% include 'includes/pagination.html' %}
+                <!-- /pagination -->
 
             </div>
-
         </div>
-
     </div>
-    <!-- /.container -->
 {% endblock %}
 
 {% block footer %}

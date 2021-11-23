@@ -9,32 +9,28 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-7">
-                {% if profile_form.errors %}
+                {% if user_form.errors %}
                     <div class="alert alert-warning alert-dismissible fade show" role="alert"
                          style="margin-top: 50px;">
                         <strong>Внимание!</strong> Проверьте правильность введённых данных!
-                        {{ profile_form.errors }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                {% elif messages %}
-                    <div class="alert alert-success alert-dismissible fade show" role="alert"
-                         style="margin-top: 50px;">
-                        <strong>Успешно!</strong>
-                        {% for message in messages %}
-                            {{ message }}
-                        {% endfor %}
+                        {{ user_form.errors }}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                 {% endif %}
+
+                {{ block.super }}
+
                 <h4 class="mt-3 mb-3">Профиль</h4>
                 <div class="col-lg-12 text-center">
                     <img width="100" height="100" alt=""
                          src="{% if user.avatar %}
-                                  {{ user.avatar.url }}
+                                {% if not backends.associated %}
+                                    {{ user.avatar.url }}
+                                {% else %}
+                                    {{ user.avatar }}
+                                {% endif %}
                               {% else %}
                                   {% static 'vendor/img/users/default_avatar.jpg' %}
                               {% endif %}"
@@ -42,53 +38,88 @@
                 </div>
                 <form action="{% url 'auth:profile' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    {{ profile_form.non_field_errors }}
+                    {{ user_form.non_field_errors }}
                     <div class="form-row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="small mb-1"
-                                       for="{{ profile_form.first_name.id_for_label }}">Имя</label>
-                                {{ profile_form.first_name }}
+                                       for="{{ user_form.first_name.id_for_label }}">Имя</label>
+                                {{ user_form.first_name }}
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="small mb-1"
-                                       for="{{ profile_form.last_name.id_for_label }}">Фамилия</label>
-                                {{ profile_form.last_name }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-row mb-2">
-                        <div class="col-lg-12">
-                            <div class="custom-file">
-                                {{ profile_form.avatar }}
-                                <label class="small mb-1"
-                                       for="{{ profile_form.avatar.id_for_label }}" style="color: #c69500">
-                                    {{ profile_form.avatar.errors }}
-                                </label>
-                                <label class="custom-file-label" for="userAvatar">Выберите изображение</label>
+                                       for="{{ user_form.last_name.id_for_label }}">Фамилия</label>
+                                {{ user_form.last_name }}
                             </div>
                         </div>
                     </div>
                     <div class="form-row">
+                        <div class="col-md-8 custom-file">
+                            <label class="small mb-1"
+                                   for="{{ user_form.avatar.id_for_label }}">
+                                Выберите аватар
+                            </label>
+                            {{ user_form.avatar }}
+                            <label class="small mb-1"
+                                   for="{{ register_form.avatar.id_for_label }}"
+                                   style="color: #c69500">
+                                {{ user_form.avatar.errors }}
+                            </label>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="small mb-1"
+                                   for="{{ user_form.age.id_for_label }}">
+                                Возраст
+                            </label>
+                            {{ user_form.age }}
+                            <label class="small mb-1"
+                                   for="{{ user_form.age.id_for_label }}"
+                                   style="color: #c69500">
+                                {{ user_form.age.errors }}
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <label class="small mb-0"
+                                   for="{{ profile_form.tagline.id_for_label }}">Теги</label>
+                            {{ profile_form.tagline }}
+                        </div>
+                    </div>
+                    <div class="form-row mt-2">
+                        <div class="col-md-12">
+                            <label class="small mb-0"
+                                   for="{{ profile_form.gender.id_for_label }}">Пол</label>
+                            {{ profile_form.gender }}
+                        </div>
+                    </div>
+                    <div class="form-row mt-2">
+                        <div class="col-md-12">
+                            <label class="small mb-0"
+                                   for="{{ profile_form.about_me.id_for_label }}">О себе</label>
+                            {{ profile_form.about_me }}
+                        </div>
+                    </div>
+                    <div class="form-row mt-2">
                         <div class="col-lg-6">
                             <label class="small mb-1"
-                                   for="{{ profile_form.username.id_for_label }}">Имя пользователя</label>
-                            {{ profile_form.username }}
+                                   for="{{ user_form.username.id_for_label }}">Имя пользователя</label>
+                            {{ user_form.username }}
                         </div>
 
                         <div class="col-md-6">
                             <label class="small mb-1"
-                                   for="{{ profile_form.email.id_for_label }}">Адрес электронной почты</label>
-                            {{ profile_form.email }}
+                                   for="{{ user_form.email.id_for_label }}">Адрес электронной почты</label>
+                            {{ user_form.email }}
                         </div>
                     </div>
                     <div class="form-row" style="display: none">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="small mb-1" for="{{ profile_form.password.id_for_label }}">Пароль</label>
-                                {{ profile_form.password }}
+                                <label class="small mb-1" for="{{ user_form.password.id_for_label }}">Пароль</label>
+                                {{ user_form.password }}
                             </div>
                         </div>
                     </div>
@@ -110,7 +141,7 @@
 
                 {% if basket %}
                     {% include 'basket/basket.html' %}
-                    <button type="button" class="btn btn-success btn-lg float-right">Оформить</button>
+                    <a href="{% url 'orders:create' %}" class="btn btn-success btn-lg float-right">Оформить</a>
                 {% else %}
                     <div class="card mb-3">
                         <div class="card-footer">

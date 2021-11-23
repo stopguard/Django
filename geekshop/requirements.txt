@@ -1,0 +1,5 @@
+psycopg2-binary
+Pillow==7.0.0
+Django==3.2
+social-auth-app-django==5.0.0
+requests==2.22.0

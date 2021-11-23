@@ -1,0 +1,66 @@
+<div class="container">
+    <a class="navbar-brand" href="{% url 'products:index' %}">GeekShop {{ today|date:"d.m.Y" }}</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+            aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link"
+                   href="{% url 'products:products' %}">
+                    Каталог
+                    <i class="fas fa-shopping-bag"></i>
+                </a>
+            </li>
+            {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">
+                        {{ user.username|title }}
+                        <i class="fas fa-user-circle"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item userprofile"
+                               href="{% url 'auth:profile' %}">
+                                <i class="fas fa-user-circle"></i>
+                                Профиль и корзина
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item userprofile"
+                               href="{% url 'orders:index' %}">
+                                <i class="fas fa-tasks"></i>
+                                Заказы
+                            </a>
+                        </li>
+                        {% if user.is_superuser %}
+                            <li class="hidden">
+                                <a class="dropdown-item" href="/admin/">
+                                    <i class="fas fa-cog"></i>
+                                    Admin
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'auth_admin:index' %}">
+                                    <i class="fas fa-cog"></i>
+                                    Управление
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li>
+                            <a class="dropdown-item" href="{% url 'auth:logout' %}">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Выйти
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'auth:login' %}">Войти <i class="fas fa-sign-in-alt"></i></a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
