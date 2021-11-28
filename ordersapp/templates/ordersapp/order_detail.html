@@ -7,7 +7,7 @@
         {{ object }}: Детали
     </div>
     <div class="card-body">
-        <p>Заказчик: {{ user }}</p>
+        <p>Заказчик: {{ object.user  }}</p>
         <p>Общее количество: <span>{{ object.items_count }}</span></p>
         <p>Общая сумма: <span>{{ object.items_cost }}</span> р.</p>
         <p>Статус: {{ object.get_status_display|capfirst }}</p>

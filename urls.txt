@@ -1,0 +1,16 @@
+/
+/auth/admin/
+/auth/admin/categories/
+/auth/admin/categories/edit/1/
+/auth/admin/products/
+/auth/admin/products/edit/1/
+/auth/admin/users/
+/auth/admin/users/create/
+/auth/admin/users/profile/1/
+/auth/profile/
+/auth/register/
+/category/1/
+/orders/
+/orders/create/
+/orders/detail/1/
+/products/
