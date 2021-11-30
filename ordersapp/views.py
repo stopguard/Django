@@ -20,11 +20,16 @@ class LoginRequiredMixin:
 
 
 class UserVerifyMixin:
-    # пока хз куда эту функцию вкорячить для ограничения доступа к чужим заказам
     def user_verify_function(self):
         pk = self.kwargs.get('pk')
         obj = get_object_or_404(Order, pk=pk)
         return self.request.user.is_superuser or self.request.user == obj.user
+
+    def get(self, request, *args, **kwargs):
+        if not self.user_verify_function():
+            messages.warning(request, 'Это заказ другого пользователя!')
+            return HttpResponseRedirect('/')
+        return super().get(request, *args, **kwargs)
 
 
 class OrderFormsMixin:
