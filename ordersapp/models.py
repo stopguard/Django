@@ -22,9 +22,9 @@ class Order(models.Model):
     status = models.CharField('статус', max_length=1,
                               choices=STATUS_CHOICES,
                               default=FORMING)
-    add_datetime = models.DateTimeField(auto_now_add=True)
+    add_datetime = models.DateTimeField(auto_now_add=True, db_index=True)
     update_datetime = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField('активен', default=True)
+    is_active = models.BooleanField('активен', default=True, db_index=True)
 
     def __str__(self):
         return f'Заказ для {self.user} | №{self.pk:0>8}'
@@ -42,7 +42,7 @@ class Order(models.Model):
         return sum(map(lambda x: x.sum_price, self.items.all()))
 
     def send_products(self):
-        items = self.items.all()
+        items = self.items.select_related('product')
         for order_item in items:
             product = order_item.product
             product_qty = product.quantity

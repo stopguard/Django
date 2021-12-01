@@ -47,7 +47,7 @@ class OrderFormsMixin:
                 if self.request.path == '/orders/create/':
                     orderitems.instance = self.object
                     self.request.user.basket.all().delete()
-                inf = orderitems.save()
+                orderitems.save()
 
         if self.object.items_cost == 0:
             self.object.delete()
@@ -74,7 +74,7 @@ class OrderCreate(LoginRequiredMixin, OrderFormsMixin, CreateView):
             formset = OrderFormSet(self.request.POST, self.request.FILES)
         else:
             context['form'].initial['user'] = self.request.user
-            basket_items = self.request.user.basket.all()
+            basket_items = self.request.user.basket.select_related('product')
             if basket_items:
                 OrderFormSet = inlineformset_factory(Order, OrderItem,
                                                      form=OrderItemForm,

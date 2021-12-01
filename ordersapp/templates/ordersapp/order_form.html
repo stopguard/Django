@@ -9,26 +9,35 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="card-body">
-            <p>Заказчик: {{ user }}</p>
-            <p>Общее количество:
-                <span class="orderitems-total-count">
-                    {% if object %}
+
+            {% if object %}
+                <p>Заказчик: {{ object.user }}</p>
+                <p>Общее количество:
+                    <span class="orderitems-total-count">
                         {{ object.items_count }}
-                    {% else %}
-                        {{ user.user_basket_count }}
-                    {% endif %}
                 </span>
-            </p>
-            <p>Общая сумма:
-                <span class="order-total-cost">
-                    {% if object %}
+                </p>
+                <p>Общая сумма:
+                    <span class="order-total-cost">
                         {{ object.items_cost }}
-                    {% else %}
-                        {{ user.user_basket_cost }}
-                    {% endif %}
                 </span>
-                р.
-            </p>
+                    р.
+                </p>
+            {% else %}
+                <p>Заказчик: {{ user }}</p>
+                <p>Общее количество:
+                    <span class="orderitems-total-count">
+                        {{ user.user_basket_count }}
+                </span>
+                </p>
+                <p>Общая сумма:
+                    <span class="order-total-cost">
+                        {{ user.user_basket_cost }}
+                </span>
+                    р.
+                </p>
+            {% endif %}
+
             {{ form.as_p }}
             <div class="table-responsive">
                 <table class="table table-bordered order-form" id="dataTable" width="100%" cellspacing="0">

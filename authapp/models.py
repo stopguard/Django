@@ -20,6 +20,12 @@ class ShopUser(AbstractUser):
     age = models.IntegerField('Возраст', default=18)
     activation_key = models.CharField(max_length=128, blank=True)
 
+    def basket_info(self):
+        items = self.basket.select_related('product')
+        quantity = sum(item.count for item in items)
+        cost = sum(item.count * item.product.price for item in items)
+        return {'qte': quantity, 'cost': cost}
+
     def user_basket_count(self):
         items = self.basket.all()
         quantity = 0
@@ -28,7 +34,7 @@ class ShopUser(AbstractUser):
         return quantity
 
     def user_basket_cost(self):
-        items = self.basket.all()
+        items = self.basket.select_related('product')
         cost = 0
         for item in items:
             cost += item.count * item.product.price

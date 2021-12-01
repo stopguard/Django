@@ -86,7 +86,7 @@ class UserEdit(SuOnlyMixin, ContextMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         page_title = f'Управление пользователем {self.object.username}'
-        basket = Basket.objects.filter(user_id=self.object.pk)
+        basket = Basket.objects.filter(user_id=self.object.pk).select_related('product')
         context.update(
             basket=basket,
             page_title=page_title,
@@ -146,7 +146,7 @@ def user_create(request):
 @user_passes_test(lambda user: user.is_superuser)
 def show_products(request):
     if request.is_ajax():
-        products_all = Product.objects.all().order_by('name')
+        products_all = Product.objects.all().select_related('category').order_by('name')
         context = {'products': products_all}
         products_all_html = render_to_string('adminapp/includes/add_to_basket.html', context=context, request=request)
         return JsonResponse({'status': True, 'products_all_html': products_all_html})
@@ -227,7 +227,7 @@ class CategoryDelete(SuOnlyMixin, ContextMixin, DeleteView):
 
 @user_passes_test(lambda user: user.is_superuser)
 def products(request):
-    products_list = Product.objects.all()
+    products_list = Product.objects.select_related('category')
     context = {
         'page_title': 'Управление - продукты',
         'products': products_list,
@@ -274,16 +274,6 @@ class CategoryCreate(SuOnlyMixin, ContextMixin, CreateView):
     form_class = CategoryForm
     success_url = reverse_lazy('auth_admin:categories')
     page_title = 'Создание категории',
-
-
-@user_passes_test(lambda user: user.is_superuser)
-def products(request):
-    products_list = Product.objects.all()
-    context = {
-        'page_title': 'Управление - продукты',
-        'products': products_list,
-    }
-    return render(request, 'adminapp/products/products.html', context)
 
 
 @user_passes_test(lambda user: user.is_superuser)
