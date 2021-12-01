@@ -29,7 +29,7 @@ def basket_add(request, prod_id, user_id):
         basket_item.save()
         if user_id != 0:
             user_basket = user.basket.select_related('product')
-            user_basket_count = user.user_basket_count()
+            user_basket_count = user.user_basket_count
             context = {
                 'object': user,
                 'basket': user_basket,
@@ -54,7 +54,7 @@ def basket_edit(request, item_id, val):
             item_cost = item.sum_price()
         else:
             item.delete()
-        basket_info = item.user.basket_info()
+        basket_info = item.user.basket_info
         basket_count = basket_info['qte']
         basket_cost = basket_info['cost']
         data = {

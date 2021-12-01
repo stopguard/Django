@@ -10,6 +10,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.timezone import now
 
 from geekshop import settings
@@ -20,12 +21,14 @@ class ShopUser(AbstractUser):
     age = models.IntegerField('Возраст', default=18)
     activation_key = models.CharField(max_length=128, blank=True)
 
+    @cached_property
     def basket_info(self):
         items = self.basket.select_related('product')
         quantity = sum(item.count for item in items)
         cost = sum(item.count * item.product.price for item in items)
         return {'qte': quantity, 'cost': cost}
 
+    @cached_property
     def user_basket_count(self):
         items = self.basket.all()
         quantity = 0
@@ -33,6 +36,7 @@ class ShopUser(AbstractUser):
             quantity += item.count
         return quantity
 
+    @cached_property
     def user_basket_cost(self):
         items = self.basket.select_related('product')
         cost = 0
@@ -40,7 +44,7 @@ class ShopUser(AbstractUser):
             cost += item.count * item.product.price
         return cost
 
-    @property
+    @cached_property
     def is_activation_key_expired(self):
         return now() - self.date_joined > timedelta(hours=48)
 

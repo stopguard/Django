@@ -28,7 +28,7 @@
                 </tr>
                 </tfoot>
                 <tbody>
-                {% for item in object.items.all %}
+                {% for item in orderitems %}
                     <tr>
                         <td>{{ item.product.name }}</td>
                         <td>{{ item.sum_price }}</td>

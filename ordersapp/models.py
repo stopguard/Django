@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.functional import cached_property
 
 from products.models import Product
 
@@ -29,15 +30,15 @@ class Order(models.Model):
     def __str__(self):
         return f'Заказ для {self.user} | №{self.pk:0>8}'
 
-    @property
+    @cached_property
     def is_forming(self):
         return self.status == self.FORMING
 
-    @property
+    @cached_property
     def items_count(self):
         return sum(map(lambda x: x.count, self.items.all()))
 
-    @property
+    @cached_property
     def items_cost(self):
         return sum(map(lambda x: x.sum_price, self.items.all()))
 
@@ -74,6 +75,6 @@ class OrderItem(models.Model):
                                 on_delete=models.CASCADE)
     count = models.PositiveIntegerField(verbose_name='количество', default=0)
 
-    @property
+    @cached_property
     def sum_price(self):
         return self.count * self.product.price

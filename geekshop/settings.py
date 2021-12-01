@@ -134,8 +134,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (BASE_DIR / 'static',)
-# STATIC_ROOT = BASE_DIR / 'static'
+# STATICFILES_DIRS = (BASE_DIR / 'static',)
+STATIC_ROOT = BASE_DIR / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -183,7 +183,8 @@ SOCIAL_AUTH_PIPELINE = (
 )
 
 # email settings
-DOMAIN_NAME = 'http://127.0.0.1:8000'
+DOMAIN_NAME = 'http://134.0.112.140'
+# DOMAIN_NAME = 'http://127.0.0.1:8000'
 
 EMAIL_HOST = 'smtp.mailtrap.io'
 EMAIL_PORT = '2525'
