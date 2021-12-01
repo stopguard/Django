@@ -51,7 +51,7 @@ def basket_edit(request, item_id, val):
             val = val if val <= product_count else product_count
             item.count = val
             item.save()
-            item_cost = item.sum_price()
+            item_cost = item.sum_price
         else:
             item.delete()
         basket_info = item.user.basket_info
