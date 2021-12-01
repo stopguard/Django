@@ -1,7 +1,8 @@
 from django.db import models
 
+from django.utils.functional import cached_property
 
-# Create your models here.
+
 class ProductsCategory(models.Model):
     name = models.CharField('Категория', max_length=64)
     description = models.CharField('Описание', max_length=256, blank=True)
@@ -14,6 +15,15 @@ class ProductsCategory(models.Model):
         if self.is_active:
             self.is_active = False
             self.save(using=using)
+
+    def get_products(self, qte_check=True):
+        return self.product_set.filter(is_active=True, quantity__gt=0) \
+            if qte_check \
+            else self.product_set.filter(is_active=True)
+
+    @cached_property
+    def get_all_products(self):
+        return self.product_set.all()
 
 
 class Product(models.Model):

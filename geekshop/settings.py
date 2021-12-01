@@ -134,8 +134,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATICFILES_DIRS = (BASE_DIR / 'static',)
-STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_DIRS = (BASE_DIR / 'static',)
+# STATIC_ROOT = BASE_DIR / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -183,8 +183,8 @@ SOCIAL_AUTH_PIPELINE = (
 )
 
 # email settings
-DOMAIN_NAME = 'http://134.0.112.140'
-# DOMAIN_NAME = 'http://127.0.0.1:8000'
+# DOMAIN_NAME = 'http://134.0.112.140'
+DOMAIN_NAME = 'http://127.0.0.1:8000'
 
 EMAIL_HOST = 'smtp.mailtrap.io'
 EMAIL_PORT = '2525'
@@ -228,3 +228,16 @@ EMAIL_SECRETS = SECRETS.get('email', {})
 
 EMAIL_HOST_USER = EMAIL_SECRETS.get('user', '')
 EMAIL_HOST_PASSWORD = EMAIL_SECRETS.get('password', '')
+
+CACHE_MIDDLEWARE_ALIAS = 'default'
+CACHE_MIDDLEWARE_SECONDS = 120
+CACHE_MIDDLEWARE_KEY_PREFIX = 'geekshop'
+
+CACHES = {
+   'default': {
+       'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+       'LOCATION': '127.0.0.1:11211',
+   }
+}
+
+LOW_CACHE = True

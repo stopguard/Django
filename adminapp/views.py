@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import user_passes_test
@@ -23,7 +21,6 @@ class SuOnlyMixin:
 
 
 class ContextMixin:
-    today = datetime.now()
     page_title = None
     basket = None
 
@@ -32,7 +29,6 @@ class ContextMixin:
         context.update(
             basket=self.basket,
             page_title=self.page_title,
-            today=self.today
         )
         return context
 

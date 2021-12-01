@@ -49,7 +49,7 @@ class OrderFormsMixin:
                     self.request.user.basket.all().delete()
                 orderitems.save()
 
-        if self.object.items_cost == 0:
+        if self.object.summary['cost'] == 0:
             self.object.delete()
         return order
 
