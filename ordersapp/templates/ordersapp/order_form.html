@@ -12,30 +12,34 @@
 
             {% if object %}
                 <p>Заказчик: {{ object.user }}</p>
-                <p>Общее количество:
-                    <span class="orderitems-total-count">
-                        {{ object.items_count }}
+                {% with object.summary as summary %}
+                    <p>Общее количество:
+                        <span class="orderitems-total-count">
+                        {{ summary.count }}
                 </span>
-                </p>
-                <p>Общая сумма:
-                    <span class="order-total-cost">
-                        {{ object.items_cost }}
+                    </p>
+                    <p>Общая сумма:
+                        <span class="order-total-cost">
+                        {{ summary.cost }}
                 </span>
-                    р.
-                </p>
+                        р.
+                    </p>
+                {% endwith %}
             {% else %}
                 <p>Заказчик: {{ user }}</p>
-                <p>Общее количество:
-                    <span class="orderitems-total-count">
-                        {{ user.user_basket_count }}
-                </span>
-                </p>
-                <p>Общая сумма:
-                    <span class="order-total-cost">
-                        {{ user.user_basket_cost }}
-                </span>
-                    р.
-                </p>
+                {% with user.basket_info as summary %}
+                    <p>Общее количество:
+                        <span class="orderitems-total-count">
+                            {{ summary.qte }}
+                        </span>
+                    </p>
+                    <p>Общая сумма:
+                        <span class="order-total-cost">
+                            {{ summary.cost }}
+                        </span>
+                        р.
+                    </p>
+                {% endwith %}
             {% endif %}
 
             {{ form.as_p }}

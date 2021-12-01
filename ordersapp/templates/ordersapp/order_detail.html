@@ -7,9 +7,20 @@
         {{ object }}: Детали
     </div>
     <div class="card-body">
-        <p>Заказчик: {{ object.user  }}</p>
-        <p>Общее количество: <span>{{ object.items_count }}</span></p>
-        <p>Общая сумма: <span>{{ object.items_cost }}</span> р.</p>
+        <p>Заказчик: {{ object.user }}</p>
+                {% with object.summary as summary %}
+                    <p>Общее количество:
+                        <span class="orderitems-total-count">
+                        {{ summary.count }}
+                </span>
+                    </p>
+                    <p>Общая сумма:
+                        <span class="order-total-cost">
+                        {{ summary.cost }}
+                </span>
+                        р.
+                    </p>
+                {% endwith %}
         <p>Статус: {{ object.get_status_display|capfirst }}</p>
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">

@@ -35,12 +35,11 @@ class Order(models.Model):
         return self.status == self.FORMING
 
     @cached_property
-    def items_count(self):
-        return sum(map(lambda x: x.count, self.items.all()))
-
-    @cached_property
-    def items_cost(self):
-        return sum(map(lambda x: x.sum_price, self.items.all()))
+    def summary(self):
+        items = self.items.select_related('product')
+        items_count = sum(map(lambda x: x.count, items))
+        items_cost = sum(map(lambda x: x.sum_price, items))
+        return {'count': items_count, 'cost': items_cost, }
 
     def send_products(self):
         items = self.items.select_related('product')
