@@ -1,6 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import user_passes_test
+from django.db import transaction
+from django.db.models import F
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
@@ -192,6 +194,17 @@ class CategoryEdit(SuOnlyMixin, ContextMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context['page_title'] = f'Управление категорией {self.object.name}'
         return context
+
+    def form_valid(self, form):
+        super_form_valid = super().form_valid(form)
+        with transaction.atomic():
+            discount = form.cleaned_data['discount']
+            if form.is_valid() and discount:
+                messages.success(self.request,
+                                 f'Успешно применена скидка {discount}% на все товары категории {self.object.name}')
+                cat_products = self.object.get_all_products
+                cat_products.update(price=F('price') * (1 - discount / 100))
+        return super_form_valid
 
 
 # @user_passes_test(lambda user: user.is_superuser)

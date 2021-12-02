@@ -27,7 +27,7 @@
                                         class="text-center font-weight-light my-4">{{ page_title }}</h3>
                                 </div>
                                 <div class="card-body">
-                                    <form action="{% url 'auth_admin:category_create' %}" method="post"
+                                    <form method="post"
                                           enctype="multipart/form-data">
                                         {% csrf_token %}
                                         {{ form.non_field_errors }}
@@ -49,9 +49,18 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="form-row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="small mb-1"
+                                                           for="{{ form.discount.id_for_label }}">Скидка</label>
+                                                    {{ form.discount }}
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="form-group mt-4 mb-0">
                                             <input class="btn btn-primary btn-block" type="submit"
-                                                   value="Создать категорию">
+                                                   value="Отправить форму">
                                         </div>
                                     </form>
                                 </div>

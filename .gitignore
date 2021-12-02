@@ -3,3 +3,4 @@ __pycache__/
 Lib/
 Scripts/
 geekshop/private_settings.json
+geekshop/private_settings_mailtrap.json

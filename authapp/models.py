@@ -54,7 +54,8 @@ class ShopUser(AbstractUser):
         message = f'Для подтверждения учётной записи {self.username} на портале ' \
                   f'{settings.DOMAIN_NAME} перейдите по ссылке:\n' \
                   f'{settings.DOMAIN_NAME}{verify_link}'
-        return send_mail(title, message, settings.EMAIL_HOST_USER, [self.email], fail_silently=False)
+        return send_mail(title, message, settings.EMAIL_HOST_USER, [self.email], False,
+                         settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
