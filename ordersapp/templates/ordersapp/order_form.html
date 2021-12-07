@@ -1,5 +1,6 @@
 {% extends 'ordersapp/order_base.html' %}
 {% load static %}
+{% load cache %}
 
 {% block order_table %}
     <div class="card-header">
@@ -9,26 +10,39 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="card-body">
-            <p>Заказчик: {{ user }}</p>
-            <p>Общее количество:
-                <span class="orderitems-total-count">
-                    {% if object %}
-                        {{ object.items_count }}
-                    {% else %}
-                        {{ user.user_basket_count }}
-                    {% endif %}
+
+            {% if object %}
+                <p>Заказчик: {{ object.user }}</p>
+                {% with object.summary as summary %}
+                    <p>Общее количество:
+                        <span class="orderitems-total-count">
+                        {{ summary.count }}
                 </span>
-            </p>
-            <p>Общая сумма:
-                <span class="order-total-cost">
-                    {% if object %}
-                        {{ object.items_cost }}
-                    {% else %}
-                        {{ user.user_basket_cost }}
-                    {% endif %}
+                    </p>
+                    <p>Общая сумма:
+                        <span class="order-total-cost">
+                        {{ summary.cost }}
                 </span>
-                р.
-            </p>
+                        р.
+                    </p>
+                {% endwith %}
+            {% else %}
+                <p>Заказчик: {{ user }}</p>
+                {% with user.basket_info as summary %}
+                    <p>Общее количество:
+                        <span class="orderitems-total-count">
+                            {{ summary.qte }}
+                        </span>
+                    </p>
+                    <p>Общая сумма:
+                        <span class="order-total-cost">
+                            {{ summary.cost }}
+                        </span>
+                        р.
+                    </p>
+                {% endwith %}
+            {% endif %}
+
             {{ form.as_p }}
             <div class="table-responsive">
                 <table class="table table-bordered order-form" id="dataTable" width="100%" cellspacing="0">
@@ -64,6 +78,10 @@
                                     {% if field.name == 'price' %}
                                         <span class="item-price">
                                             {{ field.value|default:"0,00" }}</span>р.
+                                    {% elif field.name == 'product' %}
+                                        {% cache 3600 orderitemform_product field.value %}
+                                            {{ field }}
+                                        {% endcache %}
                                     {% else %}
                                         {{ field }}
                                     {% endif %}

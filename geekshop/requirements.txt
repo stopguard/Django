@@ -1,5 +1,10 @@
-psycopg2-binary
-Pillow==7.0.0
 Django==3.2
+django-debug-toolbar
+django-debug-toolbar-template-profiler
+django-extensions
+Pillow
+pydotplus
+requests
 social-auth-app-django==5.0.0
-requests==2.22.0
+sqlparse
+psycopg2-binary

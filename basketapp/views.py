@@ -28,10 +28,10 @@ def basket_add(request, prod_id, user_id):
         basket_item.count += 1
         basket_item.save()
         if user_id != 0:
-            user_basket = user.basket.all()
-            user_basket_count = user.user_basket_count()
+            user_basket = user.basket.select_related('product')
+            user_basket_count = user.user_basket_count
             context = {
-                'user': user,
+                'object': user,
                 'basket': user_basket,
             }
             basket_html = render_to_string('basket/basket.html', request=request, context=context)
@@ -51,11 +51,12 @@ def basket_edit(request, item_id, val):
             val = val if val <= product_count else product_count
             item.count = val
             item.save()
-            item_cost = item.sum_price()
+            item_cost = item.sum_price
         else:
             item.delete()
-        basket_count = item.user.user_basket_count()
-        basket_cost = item.user.user_basket_cost()
+        basket_info = item.user.basket_info
+        basket_count = basket_info['qte']
+        basket_cost = basket_info['cost']
         data = {
             'status': True,
             'item_cost': item_cost,

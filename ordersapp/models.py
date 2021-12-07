@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.functional import cached_property
 
 from products.models import Product
 
@@ -22,27 +23,26 @@ class Order(models.Model):
     status = models.CharField('статус', max_length=1,
                               choices=STATUS_CHOICES,
                               default=FORMING)
-    add_datetime = models.DateTimeField(auto_now_add=True)
+    add_datetime = models.DateTimeField(auto_now_add=True, db_index=True)
     update_datetime = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField('активен', default=True)
+    is_active = models.BooleanField('активен', default=True, db_index=True)
 
     def __str__(self):
         return f'Заказ для {self.user} | №{self.pk:0>8}'
 
-    @property
+    @cached_property
     def is_forming(self):
         return self.status == self.FORMING
 
-    @property
-    def items_count(self):
-        return sum(map(lambda x: x.count, self.items.all()))
-
-    @property
-    def items_cost(self):
-        return sum(map(lambda x: x.sum_price, self.items.all()))
+    @cached_property
+    def summary(self):
+        items = self.items.select_related('product')
+        items_count = sum(map(lambda x: x.count, items))
+        items_cost = sum(map(lambda x: x.sum_price, items))
+        return {'count': items_count, 'cost': items_cost, }
 
     def send_products(self):
-        items = self.items.all()
+        items = self.items.select_related('product')
         for order_item in items:
             product = order_item.product
             product_qty = product.quantity
@@ -74,6 +74,6 @@ class OrderItem(models.Model):
                                 on_delete=models.CASCADE)
     count = models.PositiveIntegerField(verbose_name='количество', default=0)
 
-    @property
+    @cached_property
     def sum_price(self):
         return self.count * self.product.price

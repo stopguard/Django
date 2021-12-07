@@ -8,7 +8,6 @@ from django.urls import reverse
 
 from authapp.forms import ShopUserLoginForm, ShopUserRegisterForm, ShopUserProfileForm, UserProfileForm
 from basketapp.models import Basket
-from geekshop.settings import SOCIAL_AUTH_VK_OAUTH2_SECRET, SOCIAL_AUTH_VK_OAUTH2_KEY, VK_SECRETS
 
 
 def login(request):

@@ -47,9 +47,9 @@ class OrderFormsMixin:
                 if self.request.path == '/orders/create/':
                     orderitems.instance = self.object
                     self.request.user.basket.all().delete()
-                inf = orderitems.save()
+                orderitems.save()
 
-        if self.object.items_cost == 0:
+        if self.object.summary['cost'] == 0:
             self.object.delete()
         return order
 
@@ -74,12 +74,12 @@ class OrderCreate(LoginRequiredMixin, OrderFormsMixin, CreateView):
             formset = OrderFormSet(self.request.POST, self.request.FILES)
         else:
             context['form'].initial['user'] = self.request.user
-            basket_items = self.request.user.basket.all()
+            basket_items = self.request.user.basket.select_related('product')
             if basket_items:
                 OrderFormSet = inlineformset_factory(Order, OrderItem,
                                                      form=OrderItemForm,
                                                      extra=basket_items.count() + 1)
-                formset = OrderFormSet()
+                formset = OrderFormSet(queryset=basket_items)
                 for form, item in zip(formset.forms, basket_items):
                     form.initial['price'] = item.product.price
                     form.initial['product'] = item.product
@@ -103,7 +103,8 @@ class OrderUpdate(UserVerifyMixin, OrderFormsMixin, UpdateView):
                                    self.request.FILES,
                                    instance=self.object)
         else:
-            formset = OrderFormSet(instance=self.object)
+            query_set = self.object.items.select_related()
+            formset = OrderFormSet(instance=self.object, queryset=query_set)
             for form in formset.forms:
                 if form.instance.pk:
                     form.initial['price'] = form.instance.product.price
@@ -121,6 +122,12 @@ class OrderDelete(UserVerifyMixin, DeleteView):
 class OrderRead(UserVerifyMixin, DetailView):
     model = Order
     extra_context = {'page_title': f'Детали заказа', }
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        items = self.object.items.select_related('product')
+        context['orderitems'] = items
+        return context
 
 
 @login_required
