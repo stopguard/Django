@@ -1,0 +1,16 @@
+http://127.0.0.1:8000/
+http://127.0.0.1:8000/auth/admin/
+http://127.0.0.1:8000/auth/admin/categories/
+http://127.0.0.1:8000/auth/admin/categories/edit/1/
+http://127.0.0.1:8000/auth/admin/products/
+http://127.0.0.1:8000/auth/admin/products/edit/1/
+http://127.0.0.1:8000/auth/admin/users/
+http://127.0.0.1:8000/auth/admin/users/create/
+http://127.0.0.1:8000/auth/admin/users/profile/1/
+http://127.0.0.1:8000/auth/profile/
+http://127.0.0.1:8000/auth/register/
+http://127.0.0.1:8000/category/1/
+http://127.0.0.1:8000/orders/
+http://127.0.0.1:8000/orders/create/
+http://127.0.0.1:8000/orders/detail/1/
+http://127.0.0.1:8000/products/
