@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 
 from products.models import ProductsCategory, Product
@@ -45,3 +46,11 @@ def products(request, cat_id=0):
         'categories': db_categories,
     }
     return render(request, 'products.html', context)
+
+
+def get_price(request, product_id):
+    if request.is_ajax():
+        product = get_object_or_404(Product, id=product_id, is_active=True)
+        price = product.price
+        return JsonResponse({'status': True, 'price': price})
+

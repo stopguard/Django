@@ -1,3 +1,5 @@
+from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect
@@ -58,6 +60,7 @@ class OrderCreate(OrderFormsMixin, CreateView):
                                                      extra=basket_items.count() + 1)
                 formset = OrderFormSet()
                 for form, item in zip(formset.forms, basket_items):
+                    form.initial['price'] = item.product.price
                     form.initial['product'] = item.product
                     form.initial['count'] = item.count
             else:
@@ -80,6 +83,10 @@ class OrderUpdate(OrderFormsMixin, UpdateView):
                                    instance=self.object)
         else:
             formset = OrderFormSet(instance=self.object)
+            for form in formset.forms:
+                if form.instance.pk:
+                    form.initial['price'] = form.instance.product.price
+
         context['orderitems'] = formset
         return context
 
@@ -97,6 +104,11 @@ class OrderRead(DetailView):
 
 def order_forming_complete(request, pk):
     order = get_object_or_404(Order, pk=pk)
-    order.status = order.SENT
-    order.save()
+    try:
+        with transaction.atomic():
+            order.send_products()
+            order.status = order.SENT
+            order.save()
+    except ValidationError as err:
+        messages.warning(request, f'Ошибка! {err.message}')
     return HttpResponseRedirect(reverse('orders:index'))

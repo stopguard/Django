@@ -11,43 +11,47 @@
         <div class="card-body">
             <p>Заказчик: {{ user }}</p>
             <p>Общее количество:
-                {% if object %}
-                    {{ object.items_count }}
-                {% else %}
-                    {{ user.user_basket_count }}
-                {% endif %}
+                <span class="orderitems-total-count">
+                    {% if object %}
+                        {{ object.items_count }}
+                    {% else %}
+                        {{ user.user_basket_count }}
+                    {% endif %}
+                </span>
             </p>
             <p>Общая сумма:
-                {% if object %}
-                    {{ object.items_cost }}
-                {% else %}
-                    {{ user.user_basket_cost }}
-                {% endif %}
+                <span class="order-total-cost">
+                    {% if object %}
+                        {{ object.items_cost }}
+                    {% else %}
+                        {{ user.user_basket_cost }}
+                    {% endif %}
+                </span>
                 р.
             </p>
             {{ form.as_p }}
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered order-form" id="dataTable" width="100%" cellspacing="0">
                     {{ orderitems.management_form }}
                     <thead>
                     <tr>
                         <th>Продукт</th>
-                        {#<th>Цена</th>#}
                         <th>Кол-во</th>
+                        <th>Цена</th>
                         <th>Удалить</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
                         <th>Продукт</th>
-                        {#<th>Цена</th>#}
                         <th>Кол-во</th>
+                        <th>Цена</th>
                         <th>Удалить</th>
                     </tr>
                     </tfoot>
                     <tbody>
                     {% for item_form in orderitems %}
-                        <tr>
+                        <tr class="formset-row">
                             {% for field in item_form.visible_fields %}
                                 <td>
                                     {% if forloop.first %}
@@ -56,7 +60,14 @@
                                         {% endfor %}
                                     {% endif %}
                                     {{ field.errors.as_ul }}
-                                    {{ field }}
+
+                                    {% if field.name == 'price' %}
+                                        <span class="item-price">
+                                            {{ field.value|default:"0,00" }}</span>р.
+                                    {% else %}
+                                        {{ field }}
+                                    {% endif %}
+
                                 </td>
                             {% endfor %}
                         </tr>
@@ -70,4 +81,9 @@
             <a class="btn btn-danger" href="{% url 'orders:index' %}">Отмена</a>
         </div>
     </form>
+{% endblock %}
+
+{% block orders_js %}
+    <script src="{% static 'js/jquery.formset.js' %}"></script>
+    <script src="{% static 'js/orders-scripts.js' %}"></script>
 {% endblock %}

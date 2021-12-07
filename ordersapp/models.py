@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from products.models import Product
@@ -26,7 +27,7 @@ class Order(models.Model):
     is_active = models.BooleanField('активен', default=True)
 
     def __str__(self):
-        return f'Заказ для {self.user.username} | №{self.pk:0>8}'
+        return f'Заказ для {self.user} | №{self.pk:0>8}'
 
     @property
     def is_forming(self):
@@ -39,6 +40,18 @@ class Order(models.Model):
     @property
     def items_cost(self):
         return sum(map(lambda x: x.sum_price, self.items.all()))
+
+    def send_products(self):
+        items = self.items.all()
+        for order_item in items:
+            product = order_item.product
+            product_qty = product.quantity
+            order_item_qty = order_item.count
+            if product_qty < order_item_qty:
+                raise ValidationError(f'Недостаток продукта {product.name} на складе'
+                                      f' (Имеется {product_qty} из {order_item_qty})')
+            product.quantity -= order_item_qty
+            product.save()
 
     def delete(self, using=None, keep_parents=False, safe=True):
         if safe:
@@ -56,7 +69,9 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product,
+                                limit_choices_to={'is_active': True, 'category__is_active': True},
+                                on_delete=models.CASCADE)
     count = models.PositiveIntegerField(verbose_name='количество', default=0)
 
     @property

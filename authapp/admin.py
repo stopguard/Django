@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from authapp.models import ShopUser, UserProfile
+
+admin.site.register(ShopUser)
+admin.site.register(UserProfile)

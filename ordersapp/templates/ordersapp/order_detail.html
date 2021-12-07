@@ -4,12 +4,12 @@
 {% block order_table %}
     <div class="card-header">
         <i class="fas fa-table mr-1"></i>
-        Детали заказа
+        {{ object }}: Детали
     </div>
     <div class="card-body">
         <p>Заказчик: {{ user }}</p>
-        <p>Общее количество: {{ object.items_count }}</p>
-        <p>Общая сумма: {{ object.items_cost }} р.</p>
+        <p>Общее количество: <span>{{ object.items_count }}</span></p>
+        <p>Общая сумма: <span>{{ object.items_cost }}</span> р.</p>
         <p>Статус: {{ object.get_status_display|capfirst }}</p>
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
