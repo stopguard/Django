@@ -1,7 +1,7 @@
 'use strict';
 
 let orderItemNum, orderItemQuantity, deltaQuantity, deltaCost;
-let productPrices, quantityArr, priceArr;
+let quantityArr, priceArr;
 
 let totalForms, orderTotalQuantity, orderTotalCost;
 
@@ -16,6 +16,9 @@ function parseOrderForm() {
         const $quantity = document.querySelector(`input[name="items-${i}-count"]`);
         let quantity = parseInt($quantity.value);
         const $row = $quantity.parentNode.parentNode
+        const $select = $row.querySelector('select')
+        $select.id = `id_items-${i}-product`  // fix cache problems
+        $select.name = `items-${i}-product`   // fix cache problems
         const $price = $row.querySelector('span.item-price');
         let price = parseFloat($price.textContent.replace(',', '.'));
         price = price ? price : 0;
@@ -69,7 +72,7 @@ function onCountCorrection(e) {
     if (price) {
         orderItemQuantity = e.target.value;
         deltaQuantity = orderItemQuantity - quantityArr[orderItemNum];
-        quantityArr[orderItemNum] = orderItemQuantity
+        quantityArr[orderItemNum] = parseInt(orderItemQuantity)
         orderCountUpdate(price);
     }
 }
@@ -77,7 +80,7 @@ function onCountCorrection(e) {
 function onSelectChange(e) {
     let target = e.target;
     let product_id = target.value;
-    let itemNumber = getItemNumber(e);
+    let itemNumber = numExtractor(e.target.previousElementSibling.id);
     fetch(`${API_PATH}${product_id}/`,
         {
             method: "GET",

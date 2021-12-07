@@ -186,9 +186,13 @@ SOCIAL_AUTH_PIPELINE = (
 # DOMAIN_NAME = 'http://134.0.112.140'
 DOMAIN_NAME = 'http://127.0.0.1:8000'
 
-EMAIL_HOST = 'smtp.mailtrap.io'
-EMAIL_PORT = '2525'
-# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST = 'smtp.mailtrap.io'
+# EMAIL_PORT = '2525'
+# EMAIL_USE_TLS = False
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '465'
+EMAIL_USE_SSL = True
+
 
 # DEBUG apps
 if DEBUG:

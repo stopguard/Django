@@ -18,10 +18,12 @@ class CategoryForm(forms_lib.ModelForm):
         attrs={'class': 'form-control py-4', 'placeholder': 'Название'}))
     description = forms_lib.CharField(widget=forms_lib.TextInput(
         attrs={'class': 'form-control py-4', 'placeholder': 'Описание'}))
+    discount = forms_lib.IntegerField(widget=forms_lib.NumberInput(
+        attrs={'class': 'form-control py-4', 'placeholder': 'Скидка'}), required=False, min_value=-100, max_value=100)
 
     class Meta:
         model = ProductsCategory
-        fields = ('name', 'description')
+        fields = ('name', 'description', 'discount')
 
 
 class ProductForm(forms_lib.ModelForm):
